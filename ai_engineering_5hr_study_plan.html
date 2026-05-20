@@ -1,0 +1,231 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.header { padding: 1.25rem 0 0.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1rem; }
+.header h1 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+.progress-bar-wrap { background: var(--color-background-secondary); border-radius: 6px; height: 8px; margin: 0.75rem 0 1rem; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #534AB7, #1D9E75); transition: width 0.4s; }
+.topic-grid { display: flex; flex-direction: column; gap: 10px; }
+.topic-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.2s; }
+.topic-card:hover { border-color: var(--color-border-secondary); }
+.topic-card.active { border-color: var(--color-border-primary); }
+.topic-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+.topic-badge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.badge-purple { background: #EEEDFE; color: #3C3489; }
+.badge-teal { background: #E1F5EE; color: #085041; }
+.badge-coral { background: #FAECE7; color: #712B13; }
+.badge-blue { background: #E6F1FB; color: #0C447C; }
+.badge-amber { background: #FAEEDA; color: #633806; }
+.badge-pink { background: #FBEAF0; color: #72243E; }
+.badge-green { background: #EAF3DE; color: #27500A; }
+.badge-red { background: #FCEBEB; color: #791F1F; }
+.badge-gray { background: #F1EFE8; color: #444441; }
+@media (prefers-color-scheme: dark) {
+  .badge-purple { background: #26215C; color: #CECBF6; }
+  .badge-teal { background: #04342C; color: #9FE1CB; }
+  .badge-coral { background: #4A1B0C; color: #F5C4B3; }
+  .badge-blue { background: #042C53; color: #B5D4F4; }
+  .badge-amber { background: #412402; color: #FAC775; }
+  .badge-pink { background: #4B1528; color: #F4C0D1; }
+  .badge-green { background: #173404; color: #C0DD97; }
+  .badge-red { background: #501313; color: #F7C1C1; }
+  .badge-gray { background: #2C2C2A; color: #D3D1C7; }
+}
+.topic-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+.topic-time { font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+.topic-chevron { font-size: 12px; color: var(--color-text-tertiary); transition: transform 0.25s; }
+.topic-card.active .topic-chevron { transform: rotate(180deg); }
+.topic-body { display: none; padding: 0 14px 14px; border-top: 0.5px solid var(--color-border-tertiary); }
+.topic-card.active .topic-body { display: block; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin: 10px 0 5px; }
+.concept-list { list-style: none; display: flex; flex-wrap: wrap; gap: 5px; }
+.concept-pill { font-size: 12px; background: var(--color-background-secondary); color: var(--color-text-secondary); padding: 3px 9px; border-radius: 99px; border: 0.5px solid var(--color-border-tertiary); }
+.tip-box { background: var(--color-background-secondary); border-left: 3px solid #534AB7; border-radius: 0 8px 8px 0; padding: 8px 10px; margin-top: 10px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+.stat-card { background: var(--color-background-secondary); border-radius: 8px; padding: 10px 12px; text-align: center; }
+.stat-val { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.stat-lbl { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.progress-label { font-size: 12px; color: var(--color-text-secondary); display: flex; justify-content: space-between; }
+.priority-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.priority-text { font-size: 12px; color: var(--color-text-secondary); }
+.done-btn { font-size: 12px; padding: 5px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: transparent; color: var(--color-text-secondary); cursor: pointer; margin-top: 10px; }
+.done-btn.done { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
+@media (prefers-color-scheme: dark) { .done-btn.done { background: #04342C; color: #9FE1CB; border-color: #1D9E75; } }
+</style>
+
+<div class="header">
+  <h1>5-Hour Exam Battle Plan — AI Engineering Trainee</h1>
+  <p>BJIT Limited · 9 topics · Optimized for top 1% score</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-val" id="done-count">0/9</div>
+    <div class="stat-lbl">Topics done</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val" id="time-left">300 min</div>
+    <div class="stat-lbl">Total time</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val">Top 1%</div>
+    <div class="stat-lbl">Target</div>
+  </div>
+</div>
+
+<div class="progress-label"><span>Overall progress</span><span id="pct">0%</span></div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog" style="width:0%"></div></div>
+
+<div class="topic-grid" id="grid"></div>
+
+<script>
+const topics = [
+  {
+    name: "Data Structures",
+    time: "30 min",
+    badge: "badge-purple",
+    priority: "#7F77DD",
+    priorityLabel: "High priority",
+    concepts: ["Array & String ops","LinkedList (singly/doubly)","Stack & Queue","Hash Map / Hash Set","Binary Tree & BST","Heap (min/max)","Graph (adjacency list/matrix)","Trie basics"],
+    tip: "Focus on time & space complexity of each structure. For written exams, know WHEN to use which structure — interviewers love 'which data structure would you pick for X and why?'",
+    mustKnow: ["O(1) lookup → Hash Map","O(log n) search → BST/Heap","Queue for BFS, Stack for DFS","LRU Cache uses HashMap + DoublyLinkedList"]
+  },
+  {
+    name: "Algorithms",
+    time: "30 min",
+    badge: "badge-teal",
+    priority: "#1D9E75",
+    priorityLabel: "High priority",
+    concepts: ["Sorting (Quick, Merge, Heap, Bubble)","Binary Search","BFS & DFS","Dynamic Programming (memoization, tabulation)","Greedy algorithms","Recursion & Backtracking","Two-pointer / Sliding window","Divide & Conquer"],
+    tip: "Master Big-O: time and space complexity for every common algorithm. For written tests expect 'what's the complexity of this code' — practice analyzing nested loops mentally.",
+    mustKnow: ["Merge Sort O(n log n) stable","Quick Sort O(n log n) avg, O(n²) worst","Binary Search O(log n) on sorted array","DP = Recursion + Memoization"]
+  },
+  {
+    name: "Programming",
+    time: "20 min",
+    badge: "badge-coral",
+    priority: "#D85A30",
+    priorityLabel: "Medium priority",
+    concepts: ["Python basics (likely tested in)","List/Dict comprehensions","Lambda, map, filter","Recursion","Exception handling","File I/O","String manipulation","Type hints"],
+    tip: "BJIT AI roles commonly use Python. Know how to write clean Pythonic code. Be familiar with common patterns like swapping variables, reversing strings, finding duplicates using sets.",
+    mustKnow: ["dict.get() vs dict[]","list[::-1] to reverse","set() for O(1) lookup","zip(), enumerate(), sorted(key=)"]
+  },
+  {
+    name: "OOP",
+    time: "20 min",
+    badge: "badge-blue",
+    priority: "#378ADD",
+    priorityLabel: "Medium priority",
+    concepts: ["Class & Object","Encapsulation","Inheritance (single, multiple)","Polymorphism (method overriding/overloading)","Abstraction","Interface vs Abstract Class","Constructor & Destructor","Static vs Instance methods","Access modifiers (public/private/protected)"],
+    tip: "Expect scenario-based OOP questions. Practice explaining SOLID principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.",
+    mustKnow: ["SOLID principles (know them all)","'is-a' = inheritance, 'has-a' = composition","Abstract class CAN have implementation; interface cannot (mostly)","super() for parent class access"]
+  },
+  {
+    name: "Design Patterns",
+    time: "20 min",
+    badge: "badge-pink",
+    priority: "#D4537E",
+    priorityLabel: "Medium priority",
+    concepts: ["Singleton","Factory / Abstract Factory","Builder","Observer","Strategy","Decorator","Adapter","MVC / MVP / MVVM","Repository Pattern"],
+    tip: "Know 3 categories: Creational, Structural, Behavioral. For each pattern know: the problem it solves, a real-world example, and a code sketch. Singleton and Observer are most commonly asked.",
+    mustKnow: ["Singleton: one instance, global access","Observer: pub/sub, event system","Factory: object creation without specifying class","Strategy: swap algorithms at runtime"]
+  },
+  {
+    name: "Database",
+    time: "25 min",
+    badge: "badge-amber",
+    priority: "#BA7517",
+    priorityLabel: "Medium priority",
+    concepts: ["SQL (SELECT, JOIN, GROUP BY, HAVING)","ACID properties","Normalization (1NF, 2NF, 3NF)","Indexing & query optimization","Primary key vs Foreign key","NoSQL types (document, key-value, graph)","SQL vs NoSQL tradeoffs","Transactions & Locks","ER diagram basics"],
+    tip: "Write SQL queries for: finding duplicates, second highest salary, self-join. Memorize ACID (Atomicity, Consistency, Isolation, Durability) and CAP theorem for NoSQL questions.",
+    mustKnow: ["INNER JOIN vs LEFT JOIN vs RIGHT JOIN","GROUP BY + HAVING vs WHERE","Index = faster reads, slower writes","CAP theorem: pick 2 of Consistency, Availability, Partition tolerance"]
+  },
+  {
+    name: "AI Fundamentals",
+    time: "45 min",
+    badge: "badge-green",
+    priority: "#639922",
+    priorityLabel: "🔥 Critical — most weight",
+    concepts: ["ML types: supervised, unsupervised, reinforcement","Linear & Logistic Regression","Decision Trees, Random Forest","SVM, KNN, Naive Bayes","Neural Networks & Deep Learning basics","CNN (image), RNN/LSTM (sequence)","Transformers & Attention","Overfitting / Underfitting / Regularization","Train/Validation/Test split","Bias-Variance Tradeoff","Loss functions & Optimizers","NLP basics (tokenization, embedding, BERT, GPT)","LLM concepts (prompting, fine-tuning, RAG)","Evaluation metrics (accuracy, precision, recall, F1, AUC-ROC)"],
+    tip: "This is the most critical section — allocate the most time. For an AI Engineering role, expect questions on model selection, evaluation metrics, and real-world ML pipeline design. Know the difference between precision and recall with practical examples.",
+    mustKnow: ["Precision = TP/(TP+FP) | Recall = TP/(TP+FN)","Bias-Variance: high bias = underfit, high variance = overfit","Dropout & L1/L2 regularization prevent overfitting","Gradient descent updates weights to minimize loss","Transformer = Self-Attention + Feed Forward (no RNN)","RAG = Retrieval Augmented Generation"]
+  },
+  {
+    name: "Math / Statistics",
+    time: "30 min",
+    badge: "badge-red",
+    priority: "#E24B4A",
+    priorityLabel: "High priority",
+    concepts: ["Probability basics (conditional, Bayes' theorem)","Distributions (Normal, Binomial, Poisson)","Mean, Median, Mode, Variance, Std Dev","Correlation vs Causation","Hypothesis testing (p-value, t-test)","Linear Algebra: vectors, matrices, dot product","Eigenvalues & Eigenvectors (PCA)","Calculus: derivatives, chain rule (backprop)","Information theory: entropy, cross-entropy"],
+    tip: "Focus heavily on Bayes' theorem and probability — almost guaranteed to appear. Also understand how math underpins ML: dot product in attention, matrix multiply in neural nets, log in cross-entropy loss.",
+    mustKnow: ["Bayes: P(A|B) = P(B|A)·P(A)/P(B)","Standard deviation measures data spread","PCA uses eigenvectors to reduce dimensions","Cross-entropy loss for classification"]
+  },
+  {
+    name: "Analytical / IQ / Puzzle",
+    time: "20 min",
+    badge: "badge-gray",
+    priority: "#888780",
+    priorityLabel: "Warm-up priority",
+    concepts: ["Pattern recognition (number series)","Logical deduction","Probability puzzles","Clock/ratio/percentage problems","Seating arrangement","Blood relations","Coding-decoding","Data interpretation","Brain teasers (classic tech interview)"],
+    tip: "These questions test speed and clarity of thinking, not knowledge. Practice: reading carefully, eliminating wrong answers, and working backwards. For brain teasers, think aloud on paper — show your reasoning, not just the answer.",
+    mustKnow: ["Classic: How many golf balls fit in a school bus? (estimation)","Monty Hall: always switch — 2/3 chance win","Pigeonhole principle for puzzle reasoning","Work backwards for tricky logic chains"]
+  }
+];
+
+let doneSet = new Set();
+let openIdx = null;
+
+function render() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  topics.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'topic-card' + (openIdx === i ? ' active' : '');
+    card.innerHTML = `
+      <div class="topic-header">
+        <span class="topic-badge ${t.badge}">${i+1}</span>
+        <span class="topic-name">${t.name}</span>
+        <span class="topic-time"><i class="ti ti-clock" aria-hidden="true"></i> ${t.time}</span>
+        <span class="topic-chevron"><i class="ti ti-chevron-down"></i></span>
+      </div>
+      <div class="topic-body">
+        <div class="priority-row">
+          <div class="priority-dot" style="background:${t.priority}"></div>
+          <span class="priority-text">${t.priorityLabel}</span>
+        </div>
+        <div class="section-label">Key concepts to cover</div>
+        <ul class="concept-list">${t.concepts.map(c=>`<li class="concept-pill">${c}</li>`).join('')}</ul>
+        <div class="section-label">Must-know for exam</div>
+        <ul class="concept-list">${t.mustKnow.map(m=>`<li class="concept-pill" style="background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)">${m}</li>`).join('')}</ul>
+        <div class="tip-box"><strong>Exam tip:</strong> ${t.tip}</div>
+        <button class="done-btn${doneSet.has(i)?' done':''}" onclick="markDone(${i}, event)">
+          ${doneSet.has(i) ? '<i class="ti ti-check"></i> Done' : 'Mark as done'}
+        </button>
+      </div>
+    `;
+    card.querySelector('.topic-header').addEventListener('click', () => {
+      openIdx = openIdx === i ? null : i;
+      render();
+    });
+    grid.appendChild(card);
+  });
+  const pct = Math.round(doneSet.size / topics.length * 100);
+  document.getElementById('done-count').textContent = doneSet.size + '/' + topics.length;
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('pct').textContent = pct + '%';
+  const totalMins = topics.reduce((s,t)=>s+parseInt(t.time),0);
+  const doneMins = [...doneSet].reduce((s,i)=>s+parseInt(topics[i].time),0);
+  document.getElementById('time-left').textContent = (totalMins - doneMins) + ' min';
+}
+
+function markDone(i, e) {
+  e.stopPropagation();
+  if (doneSet.has(i)) doneSet.delete(i); else doneSet.add(i);
+  render();
+}
+
+render();
+</script>
