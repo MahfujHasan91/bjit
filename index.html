@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJIT AI Engineering — Top 1% Exam Q&A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d;
+  --bg2: #111318;
+  --bg3: #181b22;
+  --card: #1a1e28;
+  --border: #252a38;
+  --border2: #2e3548;
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --subtle: #9ca3af;
+  --accent: #7c6af7;
+  --accent2: #5dd4a8;
+  --accent3: #f97316;
+  --accent4: #60a5fa;
+  --accent5: #f472b6;
+  --gold: #fbbf24;
+  --red: #f87171;
+  --green: #4ade80;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+}
+/* TOP BAR */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,11,13,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex; align-items: center; gap: 16px;
+}
+.topbar-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
+.topbar-title span { color: var(--accent); }
+.badge-top { font-family: 'IBM Plex Mono', monospace; font-size: 10px; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 4px; }
+.progress-wrap { display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+.progress-bar { width: 120px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.4s; }
+.search-wrap { position: relative; }
+.search-input {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 12px 6px 32px; color: var(--text); font-size: 12px; width: 200px;
+  outline: none; font-family: 'Inter', sans-serif;
+}
+.search-input:focus { border-color: var(--border2); }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 12px; }
+/* LAYOUT */
+.layout { display: flex; flex: 1; }
+/* SIDEBAR */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: sticky; top: 53px; height: calc(100vh - 53px);
+  overflow-y: auto; padding: 16px 0;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.sidebar-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; padding: 0 16px 8px; text-transform: uppercase; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  font-size: 12px; color: var(--subtle);
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { border-left-color: var(--accent); background: rgba(124,106,247,0.08); color: var(--text); }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.nav-count { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); }
+.nav-learned { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--accent2); margin-left: 4px; }
+/* MAIN */
+.main { flex: 1; padding: 24px 28px; overflow-y: auto; max-width: 860px; }
+/* TOPIC SECTION */
+.topic-section { margin-bottom: 40px; scroll-margin-top: 70px; }
+.topic-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.topic-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.topic-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+.topic-meta { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: 'IBM Plex Mono', monospace; }
+.topic-pill {
+  margin-left: auto; font-size: 10px; font-family: 'IBM Plex Mono', monospace;
+  padding: 3px 10px; border-radius: 99px; white-space: nowrap;
+}
+/* Q&A CARD */
+.qa-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.qa-card:hover { border-color: var(--border2); }
+.qa-card.learned { border-color: rgba(93,212,168,0.3); background: rgba(93,212,168,0.03); }
+.qa-question {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; cursor: pointer;
+}
+.q-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--muted); flex-shrink: 0; padding-top: 2px; min-width: 24px;
+}
+.q-text { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; line-height: 1.5; }
+.q-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.learn-btn {
+  font-size: 10px; padding: 3px 8px; border-radius: 4px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--muted); cursor: pointer; font-family: 'IBM Plex Mono', monospace;
+  transition: all 0.15s; white-space: nowrap;
+}
+.learn-btn:hover { background: var(--bg3); color: var(--text); }
+.learn-btn.done { background: rgba(93,212,168,0.12); color: var(--accent2); border-color: rgba(93,212,168,0.3); }
+.chevron { color: var(--muted); font-size: 10px; transition: transform 0.2s; flex-shrink: 0; }
+.qa-card.open .chevron { transform: rotate(180deg); }
+.qa-answer {
+  display: none; padding: 0 16px 16px 52px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.qa-card.open .qa-answer { display: block; }
+.answer-text { font-size: 13px; color: var(--subtle); line-height: 1.75; }
+.answer-text strong { color: var(--text); font-weight: 500; }
+.highlight-block {
+  background: var(--bg3); border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0; padding: 10px 14px; margin-top: 12px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent4);
+  line-height: 1.7;
+}
+.must-know {
+  background: rgba(251,191,36,0.06); border-left: 3px solid var(--gold);
+  border-radius: 0 6px 6px 0; padding: 10px 14px; margin-top: 10px;
+  font-size: 12px; color: var(--gold); line-height: 1.7;
+}
+.must-know strong { color: var(--gold); }
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.tag { font-size: 10px; font-family: 'IBM Plex Mono', monospace; padding: 2px 8px; border-radius: 4px; }
+/* HERO */
+.hero {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; margin-bottom: 28px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,106,247,0.08), transparent 70%);
+  pointer-events: none;
+}
+.hero-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.hero-title span { color: var(--accent); }
+.hero-sub { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+.stat-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; text-align: center; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent); }
+.stat-lbl { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-top: 2px; }
+/* NO RESULTS */
+.no-results { text-align: center; padding: 60px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+/* Scrollbar */
+.main::-webkit-scrollbar { width: 6px; }
+.main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+/* Responsive */
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .main { padding: 16px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">BJIT <span>AI Engineering</span> — Exam Prep</div>
+  <span class="badge-top">TOP 1%</span>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+    <span id="prog-text">0 / 110</span>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" id="search" placeholder="Search questions..." oninput="doSearch(this.value)">
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const TOPICS = [
+  { id: 't1', label: 'Data Structures', color: '#7c6af7', bg: 'rgba(124,106,247,0.12)', icon: '🌲',
+    pill: 'High Priority', pillColor: '#7c6af7', qs: [
+    { q: "What is the time complexity of searching in a Hash Map vs a Binary Search Tree?",
+      a: "Hash Map: <strong>O(1) average</strong>, O(n) worst case (all keys hash to same bucket). BST: <strong>O(log n) average</strong> for balanced, O(n) worst case for skewed/unbalanced.<br><br>Use Hash Map when you need fast lookup and don't need ordered data. Use BST when you need <strong>sorted traversal or range queries</strong>.",
+      mk: "Hash Map = O(1) lookup | BST = O(log n) search | Worst case both = O(n)" },
+    { q: "What is the difference between a Stack and a Queue? Give real-world use cases.",
+      a: "<strong>Stack (LIFO)</strong>: push/pop from same end. Used in: function call stack, undo/redo operations, expression evaluation (postfix), DFS traversal.<br><br><strong>Queue (FIFO)</strong>: enqueue at rear, dequeue from front. Used in: BFS traversal, task scheduling, printer queue, message queues (Kafka), request handling.",
+      mk: "Stack → LIFO → DFS | Queue → FIFO → BFS | Deque → both ends O(1)" },
+    { q: "What is a Hash collision and how is it resolved?",
+      a: "A hash collision occurs when two different keys produce the same hash value.<br><br>Resolution: <strong>1) Chaining</strong>: each bucket holds a linked list of colliding elements. <strong>2) Open Addressing</strong>: find next available slot (Linear Probing, Quadratic Probing, Double Hashing).<br><br>Python dicts use open addressing. Java HashMap uses chaining.",
+      mk: "Chaining = linked list per bucket | Open Addressing = probe for next empty slot" },
+    { q: "Explain the difference between Array and LinkedList. When to use each?",
+      a: "<strong>Array</strong>: contiguous memory, O(1) random access, O(n) insert/delete in middle, cache-friendly.<br><strong>LinkedList</strong>: non-contiguous memory, O(n) access, O(1) insert/delete at known pointer, no random access.<br><br>Use Array when: frequent index access, memory layout matters. Use LinkedList when: frequent insertions/deletions at front/middle, size unknown.",
+      mk: "Array = O(1) access | LinkedList = O(1) insert at pointer | Array wins cache performance" },
+    { q: "What is a Heap and how does it differ from a BST?",
+      a: "<strong>Heap</strong>: complete binary tree where parent is always greater (max-heap) or smaller (min-heap) than children. O(log n) insert/delete, O(1) peek min/max. Implemented as array.<br><br><strong>BST</strong>: maintains left &lt; root &lt; right for all nodes. O(log n) search/insert/delete when balanced, O(n) worst case.<br><br>Key difference: Heap only guarantees parent-child order (useful for priority queues). BST maintains full sorted order (useful for search and range queries).",
+      mk: "Heap = priority queue, O(1) peek | BST = sorted order, O(log n) search" },
+    { q: "What is the difference between DFS and BFS traversal in graphs?",
+      a: "<strong>BFS (Breadth First Search)</strong>: uses Queue, explores all neighbors level by level. Finds shortest path in unweighted graphs. Time O(V+E), Space O(V).<br><br><strong>DFS (Depth First Search)</strong>: uses Stack (or recursion), goes deep before backtracking. Used for: cycle detection, topological sort, connected components, maze solving. Time O(V+E), Space O(V).",
+      mk: "BFS = Queue = shortest path | DFS = Stack = cycle detection, topo sort" },
+    { q: "What is a Trie and when is it used?",
+      a: "A Trie (prefix tree) is a tree where each node represents a character, and root-to-leaf paths spell complete words.<br><br>Operations: O(m) for insert/search where m = word length, regardless of dictionary size.<br>Used for: <strong>autocomplete, spell checking, IP routing, word prefix matching</strong>.<br><br>Advantage over hash map: supports prefix searches efficiently (find all words starting with 'pre').",
+      mk: "Trie = O(m) per operation where m=word length | Use for prefix search, autocomplete" },
+    { q: "Explain adjacency list vs adjacency matrix for graphs.",
+      a: "<strong>Adjacency Matrix</strong>: 2D array V×V, edge[i][j]=1 if edge exists. O(1) edge lookup. O(V²) space. Good for dense graphs (many edges).<br><br><strong>Adjacency List</strong>: array of lists, each node stores its neighbors. O(V+E) space. O(degree) edge lookup. Good for sparse graphs.<br><br>Most real-world graphs are sparse → adjacency list preferred.",
+      mk: "Matrix = O(V²) space, O(1) edge check | List = O(V+E) space, better for sparse graphs" },
+    { q: "What is an LRU Cache? How would you implement it?",
+      a: "LRU (Least Recently Used) Cache evicts the least recently accessed item when full.<br><br>Implementation: <strong>HashMap + Doubly Linked List</strong>.<br>• HashMap gives O(1) key lookup<br>• Doubly Linked List maintains access order (most recent at front, LRU at back)<br><br>On access: move node to front. On insert: add to front; if full, remove from back. All operations O(1).",
+      mk: "LRU = HashMap + DoublyLinkedList | All operations O(1) | Common interview question" },
+    { q: "What is the difference between a min-heap and a max-heap? How is a heap built?",
+      a: "<strong>Min-heap</strong>: parent is always ≤ children. Root = minimum element. Used for: priority queues where minimum processed first, Dijkstra's algorithm, k smallest elements.<br><br><strong>Max-heap</strong>: parent is always ≥ children. Root = maximum element. Used for: heap sort, k largest elements.<br><br>Build heap from array: O(n) using heapify-down from n/2 to 0. Insert: O(log n). Extract-min/max: O(log n).",
+      mk: "Heap is a complete binary tree stored as array | Build = O(n) | Insert/Delete = O(log n)" },
+    { q: "What is the time complexity of common operations on different data structures?",
+      a: "Array: access O(1), search O(n), insert/delete O(n)<br>LinkedList: access O(n), search O(n), insert/delete at head O(1)<br>Hash Map: access/insert/delete O(1) avg, O(n) worst<br>BST (balanced): access/insert/delete O(log n)<br>Heap: peek O(1), insert/delete O(log n)<br>Stack/Queue: push/pop/enqueue/dequeue O(1)",
+      mk: "Hash Map = fastest lookup | BST = sorted order with O(log n) | Heap = fastest min/max" },
+    { q: "What is a circular linked list? What problems can it cause?",
+      a: "A circular linked list has the last node pointing back to the first node (or to any previous node). Used in: round-robin scheduling, music playlist loops, circular buffer implementation.<br><br>Problems: standard traversal (while node != null) causes infinite loop. Must track visited nodes or use Floyd's cycle detection algorithm (slow/fast pointer) to detect cycles.<br><br>Floyd's algorithm: O(n) time, O(1) space to detect cycle.",
+      mk: "Floyd's cycle detection = slow + fast pointer | O(n) time, O(1) space" }
+  ]},
+  { id: 't2', label: 'Algorithms', color: '#5dd4a8', bg: 'rgba(93,212,168,0.1)', icon: '⚡',
+    pill: 'High Priority', pillColor: '#5dd4a8', qs: [
+    { q: "What is the difference between Quick Sort and Merge Sort? Which is better?",
+      a: "<strong>Quick Sort</strong>: in-place partitioning around pivot, avg O(n log n), worst O(n²), O(log n) space (call stack). Not stable. Faster in practice due to cache efficiency.<br><br><strong>Merge Sort</strong>: divide + merge, always O(n log n), O(n) extra space. Stable sort. Better for linked lists and external sorting.<br><br>Quick Sort preferred for arrays where memory matters. Merge Sort when stability required or worst-case guarantee needed.",
+      mk: "Quick Sort = in-place, cache-friendly, not stable | Merge Sort = stable, O(n) space, guaranteed O(n log n)" },
+    { q: "What is Dynamic Programming? How does it differ from Greedy?",
+      a: "<strong>Dynamic Programming</strong>: breaks into overlapping subproblems, solves each once, builds optimal solution bottom-up or top-down with memoization. Considers all choices. Guarantees global optimum.<br><br><strong>Greedy</strong>: always makes locally optimal choice, never reconsiders. Faster but not always globally optimal.<br><br>DP examples: Fibonacci, 0/1 Knapsack, Longest Common Subsequence, Edit Distance.<br>Greedy examples: Activity Selection, Huffman Encoding, Dijkstra's.",
+      mk: "DP = overlapping subproblems + optimal substructure | Greedy = locally optimal → may not be globally optimal" },
+    { q: "Explain Binary Search. What are its variants?",
+      a: "<strong>Binary Search</strong>: finds target in sorted array by halving search space. O(log n) time, O(1) space. Precondition: sorted array.<br><br>Variants:<br>• <strong>Classic</strong>: find exact element<br>• <strong>Left boundary</strong>: first occurrence (while lo &lt; hi, hi = mid)<br>• <strong>Right boundary</strong>: last occurrence (lo = mid+1 when found)<br>• <strong>Answer space</strong>: binary search on answer, verify with function (e.g., find minimum capacity)<br>• <strong>Rotated array</strong>: check which half is sorted first",
+      mk: "Binary search applies to: sorted arrays, rotated arrays, answer space problems, finding boundaries" },
+    { q: "What are memoization and tabulation in Dynamic Programming?",
+      a: "<strong>Memoization (top-down)</strong>: recursive + cache results in dictionary. Only computes needed subproblems. Easier to code from recursive solution. May have call stack overhead.<br><br><strong>Tabulation (bottom-up)</strong>: iterative, fill a table from base case up. All subproblems computed. No recursion overhead. Usually faster in practice.<br><br>Both have same time complexity. Tabulation preferred for production code.",
+      mk: "Memoization = recursive + cache | Tabulation = iterative + table | Both O(n) for Fibonacci" },
+    { q: "Explain the two-pointer and sliding window techniques with examples.",
+      a: "<strong>Two-pointer</strong>: two pointers moving toward or away from each other. Turns O(n²) into O(n). Uses: Two Sum in sorted array, remove duplicates, container with most water, palindrome check.<br><br><strong>Sliding Window</strong>: maintains a window sliding across array. <em>Fixed window</em>: max sum subarray of size k. <em>Variable window</em>: expand right, shrink left based on condition. Example: longest substring without repeating characters. O(n) time.",
+      mk: "Two-pointer = sorted array tricks | Sliding window = subarray/substring problems | Both O(n)" },
+    { q: "What is the time and space complexity of common sorting algorithms?",
+      a: "Bubble Sort: O(n²) avg/worst, O(n) best, O(1) space, stable<br>Selection Sort: O(n²) always, O(1) space, not stable<br>Insertion Sort: O(n²) avg, O(n) best (nearly sorted), O(1) space, stable<br>Merge Sort: O(n log n) always, O(n) space, stable<br>Quick Sort: O(n log n) avg, O(n²) worst, O(log n) space, not stable<br>Heap Sort: O(n log n) always, O(1) space, not stable<br>Counting Sort: O(n+k) time and space<br>Radix Sort: O(nk)",
+      mk: "Only stable O(n log n): Merge Sort | Best space + O(n log n): Heap Sort | Fastest avg: Quick Sort" },
+    { q: "How does Breadth First Search find the shortest path?",
+      a: "BFS explores nodes level by level using a Queue. Since it visits all nodes at distance d before distance d+1, the <strong>first time it reaches the destination is via the fewest edges</strong> — guaranteed shortest path.<br><br>Works only for <strong>unweighted graphs</strong>. For weighted graphs: use Dijkstra's (positive weights) or Bellman-Ford (negative weights).<br><br>BFS also used for: bipartite graph check, finding connected components, 0-1 BFS for 0/1 weight graphs.",
+      mk: "BFS = shortest path in unweighted graphs | Dijkstra = weighted positive | Bellman-Ford = negative weights" },
+    { q: "Explain Dijkstra's algorithm. What is its time complexity and limitation?",
+      a: "Dijkstra's finds shortest path from source to all nodes in weighted graph.<br><br>Algorithm: Use min-heap (priority queue). Initialize all distances as ∞, source as 0. Greedily pick unvisited node with smallest distance, relax its neighbors.<br><br>Time: O((V+E) log V) with binary heap, O(V²) with array.<br><br><strong>Limitation: fails with negative edge weights</strong>. Use Bellman-Ford (O(VE)) for negative edges, or note negative edges don't occur in Dijkstra problems.",
+      mk: "Dijkstra = min-heap + greedy + relaxation | O((V+E) log V) | No negative edges!" },
+    { q: "What is topological sort? Give real-world applications.",
+      a: "Topological sort orders nodes in a <strong>DAG (Directed Acyclic Graph)</strong> such that for every edge u→v, u comes before v.<br><br>Algorithms: <strong>Kahn's</strong> (BFS, removes nodes with 0 in-degree) or <strong>DFS-based</strong> (push to stack on finish).<br><br>Applications: task scheduling with dependencies, build systems (Makefile), course prerequisite ordering, package dependency resolution (npm install), compilation order.",
+      mk: "Topological sort = only for DAGs | Detect cycle: if not all nodes are in result, cycle exists" },
+    { q: "What is the difference between recursion and iteration? When to use each?",
+      a: "<strong>Recursion</strong>: function calls itself with smaller subproblem until base case. Cleaner for: tree/graph traversal, divide & conquer, problems that naturally decompose (Fibonacci, factorial, mergesort). Risk: stack overflow for deep recursion.<br><br><strong>Iteration</strong>: explicit loop with state. Better performance (no call stack overhead). Better for simple repetition and when depth is large.<br><br>Any recursion can be converted to iteration with explicit stack. Prefer iteration for production code when depth is unbounded.",
+      mk: "Recursion = elegant for trees/divide-conquer | Iteration = better performance | Use explicit stack for DFS iteratively" },
+    { q: "What is the knapsack problem? Explain 0/1 vs fractional knapsack.",
+      a: "Given items with weights and values, maximize value in a knapsack of capacity W.<br><br><strong>0/1 Knapsack</strong>: each item either taken (1) or not (0). Requires <strong>Dynamic Programming</strong>. dp[i][w] = max value using first i items with capacity w. O(n×W) time and space.<br><br><strong>Fractional Knapsack</strong>: can take fractions of items. Solved by <strong>Greedy</strong>: sort by value/weight ratio, take highest ratio items first. O(n log n).",
+      mk: "0/1 Knapsack = DP | Fractional Knapsack = Greedy (sort by value/weight) | Classic DP interview problem" },
+    { q: "What is Big-O notation? Explain O(1), O(log n), O(n), O(n log n), O(n²).",
+      a: "Big-O describes how runtime/space grows with input size n in worst case.<br><br>O(1): constant, independent of n. Array index access, hash map lookup.<br>O(log n): eliminates half each step. Binary search, BST operations.<br>O(n): single pass. Linear search, single loop.<br>O(n log n): loop + divide. Merge sort, Quick sort avg, heap sort.<br>O(n²): nested loops. Bubble/selection sort, all pairs comparison.<br>O(2ⁿ): exponential. Recursive brute force, all subsets.<br><br>For n=10⁶: O(n log n)=20M ops; O(n²)=10¹² ops → 50,000× difference.",
+      mk: "Rank: O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ) < O(n!)" }
+  ]},
+  { id: 't3', label: 'Programming', color: '#60a5fa', bg: 'rgba(96,165,250,0.1)', icon: '🐍',
+    pill: 'Medium Priority', pillColor: '#60a5fa', qs: [
+    { q: "What is the difference between a list and a tuple in Python? When to use each?",
+      a: "<strong>List</strong>: mutable, uses [], dynamic, slightly slower. <strong>Tuple</strong>: immutable, uses (), fixed size, faster, less memory, hashable (can be dict key).<br><br>Use tuple for: data that shouldn't change (coordinates, RGB, function returning multiple values, dictionary keys). Use list for: data you'll modify, append to, or sort.<br><br>Tuple packing/unpacking: a, b = 1, 2 — very Pythonic.",
+      mk: "Tuple = immutable + hashable + faster | List = mutable | Tuple as dict key works; list doesn't" },
+    { q: "Explain Python decorators with an example.",
+      a: "A decorator wraps a function to add behavior without modifying its code. Uses @syntax (syntactic sugar for f = decorator(f)).<br><br><pre>def timer(func):\n  def wrapper(*args, **kwargs):\n    start = time.time()\n    result = func(*args, **kwargs)\n    print(f'{time.time()-start:.2f}s')\n    return result\n  return wrapper\n\n@timer\ndef slow_function(): ...</pre><br>Used in: Flask routing (@app.route), Django views, caching (@lru_cache), authentication, logging.",
+      mk: "Decorator = function wrapping function | @functools.wraps preserves metadata | @lru_cache for memoization" },
+    { q: "What is the difference between list comprehension and generator expression?",
+      a: "<strong>List comprehension</strong>: [x**2 for x in range(10)] — evaluates ALL at once, stored in memory. Returns a list.<br><br><strong>Generator expression</strong>: (x**2 for x in range(10)) — lazy evaluation, yields one item at a time, O(1) memory regardless of size.<br><br>sum(x**2 for x in range(10**9)) works without memory crash. A list would require 8GB+ memory.<br><br>Use generator when: iterating once, large datasets, pipeline of transformations.",
+      mk: "List comp = memory stored | Generator = lazy, O(1) memory | Use generator for large data, once-through iteration" },
+    { q: "What is the difference between '==' and 'is' in Python?",
+      a: "<strong>==</strong>: checks value equality (calls __eq__). <strong>is</strong>: checks identity — same object in memory (compares id()).<br><br>a = [1,2]; b = [1,2]: a==b is True (same values), a is b is False (different objects).<br><br>Gotcha: CPython caches small integers (-5 to 256) and short interned strings, so 'a is b' may return True for these. Never use 'is' for value comparison — use only for None check: 'if x is None'.",
+      mk: "== checks value | is checks identity | Always: if x is None (not == None)" },
+    { q: "What are *args and **kwargs? How are they used?",
+      a: "<strong>*args</strong>: collects extra positional arguments as a tuple. <strong>**kwargs</strong>: collects extra keyword arguments as a dict.<br><br>def f(*args, **kwargs): handles any call. Critical for: wrapper functions/decorators (must pass through all arguments), API functions with optional params, function overloading substitute in Python.<br><br>Unpacking: f(*[1,2,3]) passes list as positional args. f(**{'a':1,'b':2}) passes dict as keyword args.",
+      mk: "*args = tuple of positional | **kwargs = dict of keyword | Essential for decorators and flexible APIs" },
+    { q: "What is Python's GIL? How does it affect multithreading?",
+      a: "GIL (Global Interpreter Lock) is a mutex in CPython that allows only <strong>one thread to execute Python bytecode at a time</strong>.<br><br>Impact: Python threads don't provide true parallelism for CPU-bound tasks (counting, math, ML inference).<br><br>Workaround: <strong>multiprocessing</strong> (separate processes, each with own GIL) for CPU-bound. Threading works fine for <strong>I/O-bound</strong> tasks (network calls, file read) because GIL is released during I/O wait.<br><br>Modern Python (3.13+) is adding per-thread GIL as optional.",
+      mk: "GIL = one thread runs at a time | CPU-bound → multiprocessing | I/O-bound → threading is fine" },
+    { q: "What is the difference between shallow copy and deep copy?",
+      a: "<strong>Shallow copy</strong> (copy.copy() or list[:]): creates new outer object but inner objects are still shared references. Modifying nested elements affects both copies.<br><br><strong>Deep copy</strong> (copy.deepcopy()): recursively copies ALL nested objects. Fully independent clone.<br><br>Example: matrix = [[1,2],[3,4]]. shallow[0].append(5) modifies original. deep[0].append(5) does not.<br><br>Use deep copy when working with nested mutable structures and needing full independence.",
+      mk: "Shallow = new container, shared inner objects | Deep = completely independent clone" },
+    { q: "Explain common Python built-in functions: map, filter, reduce, zip, enumerate.",
+      a: "<strong>map(fn, iterable)</strong>: apply function to each element → lazy iterator. map(str, [1,2,3]) → ['1','2','3'].<br><strong>filter(fn, iterable)</strong>: keep elements where fn is True → lazy iterator. filter(None, lst) removes falsy.<br><strong>reduce(fn, iterable)</strong>: from functools, fold list to single value. reduce(lambda a,b: a*b, [1,2,3,4]) = 24.<br><strong>zip(a,b)</strong>: pairs elements. list(zip([1,2],[3,4])) = [(1,3),(2,4)]. Stops at shorter.<br><strong>enumerate(lst)</strong>: index + value pairs. for i, v in enumerate(lst).",
+      mk: "Prefer list/dict comprehensions over map/filter for readability | zip is essential for parallel iteration" },
+    { q: "What are Python's common data structures from the collections module?",
+      a: "<strong>deque</strong>: O(1) append/pop from both ends (list is O(n) for left side). Use for queues and sliding windows.<br><strong>Counter</strong>: count occurrences automatically. Counter('hello') → {'l':2,'h':1,...}. most_common(k) in O(n).<br><strong>defaultdict</strong>: dict with default value, no KeyError. defaultdict(list) for graph adjacency list.<br><strong>OrderedDict</strong>: remembers insertion order (redundant in Python 3.7+ but has move_to_end()).<br><strong>namedtuple</strong>: tuple with named fields. Readable, immutable, same memory as tuple.",
+      mk: "collections.Counter for frequency | deque for O(1) queue ops | defaultdict for auto-initializing dicts" },
+    { q: "What is list slicing in Python? Explain with examples.",
+      a: "Slicing: lst[start:stop:step]. All parts optional.<br><br>lst[2:5] → elements at index 2,3,4<br>lst[::-1] → reversed list<br>lst[::2] → every other element<br>lst[-3:] → last 3 elements<br>lst[:] → shallow copy<br><br>String slicing works identically. Slicing creates a new list (doesn't modify original). Negative indices: -1 = last element. Assigning to slice modifies in place: lst[1:3] = [10,20,30].",
+      mk: "lst[::-1] = reverse | lst[::2] = every other | lst[-n:] = last n elements | lst[:] = shallow copy" }
+  ]},
+  { id: 't4', label: 'OOP', color: '#f97316', bg: 'rgba(249,115,22,0.1)', icon: '🏗️',
+    pill: 'Medium Priority', pillColor: '#f97316', qs: [
+    { q: "What are the 4 pillars of OOP? Explain each.",
+      a: "<strong>1. Encapsulation</strong>: bundling data + methods into a class, hiding internal state, exposing only via public interface. Protects data integrity.<br><br><strong>2. Abstraction</strong>: hiding complex implementation details, showing only essential features. Abstract classes and interfaces achieve this.<br><br><strong>3. Inheritance</strong>: child class inherits attributes/methods from parent. Promotes code reuse. 'is-a' relationship.<br><br><strong>4. Polymorphism</strong>: same interface, different behavior. Method overriding (runtime) and overloading (compile-time). A Dog and Cat both have .speak() but different sounds.",
+      mk: "APIE: Abstraction, Polymorphism, Inheritance, Encapsulation | Inheritance = is-a | Composition = has-a" },
+    { q: "What are the SOLID principles? Explain each with an example.",
+      a: "<strong>S</strong>: Single Responsibility — one class = one reason to change. Don't put email sending in User class.<br><strong>O</strong>: Open/Closed — open for extension, closed for modification. Add new PaymentMethod class, don't edit existing code.<br><strong>L</strong>: Liskov Substitution — subclass replaces parent without breaking program. Square shouldn't extend Rectangle if setWidth breaks Square's invariant.<br><strong>I</strong>: Interface Segregation — don't force clients to implement unused methods. Split large interfaces.<br><strong>D</strong>: Dependency Inversion — depend on abstractions not concrete classes. Use EmailServiceInterface, not EmailService directly.",
+      mk: "SOLID: Single responsibility, Open/closed, Liskov substitution, Interface segregation, Dependency inversion" },
+    { q: "What is the difference between an abstract class and an interface?",
+      a: "<strong>Abstract Class</strong>: can have implemented methods AND abstract methods. Can have state (instance variables). Single inheritance (most languages).<br><br><strong>Interface</strong>: only method signatures (no implementation traditionally). No state. Supports multiple 'inheritance'. Contract for what a class can do.<br><br>In Python: ABC module for abstract classes. Python uses duck typing instead of formal interfaces. In Java: abstract class vs explicit interface keyword.<br><br>Rule: Abstract class for shared code + 'is-a'. Interface for 'can-do' contracts.",
+      mk: "Abstract class = shared code + abstract methods | Interface = pure contract | Python uses ABC + duck typing" },
+    { q: "Explain method overriding vs method overloading.",
+      a: "<strong>Overriding (runtime polymorphism)</strong>: subclass provides its own implementation of a method already defined in parent. Same signature. Determined at runtime.<br>Example: Animal.speak() → Dog.speak() prints 'Woof', Cat.speak() prints 'Meow'.<br><br><strong>Overloading (compile-time polymorphism)</strong>: same method name, different parameters. Java/C++ support this natively. Python doesn't — use default parameters or *args as substitute.<br><br>Python uses late binding — method resolution happens at runtime (all overriding in Python).",
+      mk: "Overriding = same signature, subclass implementation, runtime | Overloading = same name different params, compile-time" },
+    { q: "What is composition vs inheritance? Which is preferred and why?",
+      a: "<strong>Inheritance (is-a)</strong>: Dog is an Animal — child inherits parent's methods and state.<br><br><strong>Composition (has-a)</strong>: Car has an Engine — object contains another object as attribute.<br><br>'<strong>Favor composition over inheritance</strong>' (Gang of Four). Why:<br>• Avoids deep inheritance hierarchies (fragile base class problem)<br>• More flexible — swap implementations at runtime<br>• Easier to test (mock components)<br>• Inheritance breaks encapsulation (subclass knows parent's internals)<br><br>Use inheritance only for true is-a relationships with shared code.",
+      mk: "Composition > Inheritance | 'Favor composition over inheritance' — GoF book | Has-a is more flexible than is-a" },
+    { q: "What are static methods, class methods, and instance methods in Python?",
+      a: "<strong>Instance method</strong>: takes 'self', accesses/modifies instance state. Most common type.<br><br><strong>Class method</strong>: @classmethod, takes 'cls', accesses/modifies class-level state. Used for alternative constructors: Date.from_string('2024-01-01').<br><br><strong>Static method</strong>: @staticmethod, no self or cls, utility function logically belonging to class but needing no class/instance state. Like Math.sqrt() — no instance needed.",
+      mk: "@classmethod = cls, alternative constructor | @staticmethod = no self/cls, utility function | instance = self" },
+    { q: "What is multiple inheritance and the MRO (Method Resolution Order)?",
+      a: "Multiple inheritance: class inherits from more than one parent. Problem: 'Diamond problem' — ambiguity when two parents share a common ancestor.<br><br>Python resolves with <strong>MRO using C3 Linearization</strong>: searches left-to-right, depth-first, no class visited twice. Check with ClassName.__mro__ or ClassName.mro().<br><br>Example: class D(B, C): Python searches D → B → C → A (base).<br><br>Java/C# avoid this by allowing multiple inheritance only through interfaces.",
+      mk: "Python MRO = C3 linearization, left-to-right | Check with __mro__ | Diamond problem solved by MRO" },
+    { q: "What is encapsulation in Python? How are private attributes implemented?",
+      a: "Encapsulation = binding data + methods, restricting direct access.<br><br>Python conventions:<br><strong>_variable</strong> (single underscore): 'protected' by convention. Accessible but shouldn't be used externally.<br><strong>__variable</strong> (double underscore): name mangling — becomes _ClassName__variable. Harder but not impossible to access externally.<br><br>Use <strong>@property</strong> for controlled access (getter/setter with validation logic):<br>@property def age(self): return self._age<br>@age.setter def age(self, v): if v>0: self._age = v",
+      mk: "_name = protected convention | __name = name mangling | @property = clean getter/setter without explicit call" },
+    { q: "What is dependency injection? Why is it important in OOP?",
+      a: "Instead of a class creating its own dependencies, they are <strong>passed in (injected) from outside</strong>.<br><br>Bad: class EmailService: def __init__(self): self.client = SMTPClient() (hard to test, tight coupling)<br>Good: class EmailService: def __init__(self, client): self.client = client (inject any client, including mocks)<br><br>Benefits: easier unit testing (inject mocks), looser coupling, follows Dependency Inversion Principle, supports Inversion of Control containers.<br>Used in: Flask extensions, Django middleware, Spring (Java).",
+      mk: "DI = pass dependencies in, don't create them | Makes testing easy | Follows SOLID's D principle" },
+    { q: "What is duck typing and how does Python use it?",
+      a: "'If it walks like a duck and quacks like a duck, it's a duck.' Python doesn't check the <em>type</em> of an object — it checks if the required method/attribute exists.<br><br>Example: any object with a .read() method can be passed as a file argument — no interface needed.<br><br>Enables highly flexible code. The opposite of static typing. Contrast with Java where interfaces must be explicitly declared.<br><br>Use isinstance() only when you truly need to check type for branching logic. Prefer duck typing for flexible APIs.",
+      mk: "Duck typing = check behavior not type | More flexible than static typing | Python protocols (structural subtyping) formalize this" },
+    { q: "What is the difference between __str__ and __repr__ in Python?",
+      a: "<strong>__repr__</strong>: unambiguous developer-facing representation. Called by repr(). Should ideally be valid Python to recreate the object: Point(1, 2). Used in debugger, REPL, logging.<br><br><strong>__str__</strong>: human-readable representation. Called by str() and print(). For display: 'Point at (1, 2)'.<br><br>If __str__ not defined, falls back to __repr__. Always implement __repr__ first (covers both). Add __str__ for user-facing display. Collections (lists, dicts) call __repr__ on their elements, not __str__.",
+      mk: "__repr__ = developer (recreate object) | __str__ = user display | Fallback: __str__ → __repr__" },
+    { q: "What is the __init__ vs __new__ method in Python?",
+      a: "<strong>__new__(cls)</strong>: creates and returns a new instance (allocates memory). Called first. Returns the instance. Rarely overridden.<br><br><strong>__init__(self)</strong>: initializes the created instance. Called after __new__. Sets attributes. The 'constructor' you usually write.<br><br>Override __new__ for: Singleton pattern, subclassing immutable types (int, str, tuple), object pooling.<br><br>Example Singleton: if not cls._instance: cls._instance = super().__new__(cls); return cls._instance",
+      mk: "__new__ = creates object | __init__ = initializes object | Override __new__ for Singleton pattern" }
+  ]},
+  { id: 't5', label: 'Design Patterns', color: '#f472b6', bg: 'rgba(244,114,182,0.1)', icon: '🧩',
+    pill: 'Medium Priority', pillColor: '#f472b6', qs: [
+    { q: "What are the three categories of design patterns? Name examples from each.",
+      a: "<strong>Creational</strong> (object creation): Singleton, Factory Method, Abstract Factory, Builder, Prototype.<br><br><strong>Structural</strong> (how objects compose): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy.<br><br><strong>Behavioral</strong> (communication between objects): Observer, Strategy, Command, Iterator, Template Method, Chain of Responsibility, State, Visitor.<br><br>From GoF (Gang of Four) book — the bible of design patterns. Know 2-3 from each category deeply.",
+      mk: "Creational = HOW objects created | Structural = HOW objects composed | Behavioral = HOW objects communicate" },
+    { q: "What is the Singleton pattern? How to implement it in Python?",
+      a: "Ensures <strong>only one instance</strong> of a class exists globally. Provides a global access point.<br><br>Uses: database connection pool, logging, configuration, cache.<br><br>Python implementation: override __new__ to return existing instance. Or use module-level variable (Python modules are singletons by default — simplest approach). Or @classmethod with class variable.<br><br>Pitfalls: makes unit testing hard (global state), violates Single Responsibility, thread safety issues in multi-threaded environments. Use sparingly.",
+      mk: "Singleton: one instance, global access | Implement via __new__ or module | Cons: hard to test, global state" },
+    { q: "Explain the Factory Pattern with a real-world example.",
+      a: "Factory creates objects <strong>without exposing instantiation logic</strong> to the client.<br><br>Example: ShapeFactory.create('circle') → returns Circle(). create('rectangle') → returns Rectangle(). Client doesn't know or care which class is used.<br><br>Solves: code should be closed to modification (don't change client code to add new types). Just add new class + factory mapping.<br><br><strong>Abstract Factory</strong>: factory of factories. Creates families of related objects (e.g., UIFactory → WindowsButton+WindowsDialog or MacButton+MacDialog).",
+      mk: "Factory = decouple creation from use | Abstract Factory = family of related objects | Both follow Open/Closed principle" },
+    { q: "What is the Observer Pattern? Where is it used in real systems?",
+      a: "Subject (publisher) maintains a list of observers (subscribers). When state changes, notifies all observers via update() method. Observers are loosely coupled — subject doesn't know concrete observer types.<br><br>Real-world uses:<br>• YouTube/Twitter: channel=subject, followers=observers<br>• UI Event listeners: button=subject, click handlers=observers<br>• Kafka/RabbitMQ: producers=subject, consumers=observers<br>• Django signals: sender=subject, receivers=observers<br>• Stock price alerts: price monitor=subject, alert handlers=observers",
+      mk: "Observer = publisher-subscriber | Loose coupling | Used in event systems, message queues, UI frameworks" },
+    { q: "What is the Strategy Pattern? How does it differ from inheritance?",
+      a: "Defines a family of algorithms, encapsulates each, makes them interchangeable at runtime.<br><br>Example: SortContext holds a sort_strategy. Can switch between BubbleSortStrategy, MergeSortStrategy, QuickSortStrategy at runtime.<br><br>vs Inheritance: strategy uses <strong>composition</strong> (has-a) instead of inheritance (is-a). More flexible — strategies can change at runtime, can be reused across classes. Follows Open/Closed: add new strategy without modifying context.<br><br>Used in: payment processing, file compression algorithms, routing strategies, ML model selection.",
+      mk: "Strategy = swappable algorithms via composition | Favors composition over inheritance | Runtime algorithm switching" },
+    { q: "What is the Decorator Pattern? How does it differ from Python's @decorator?",
+      a: "<strong>Design Pattern Decorator</strong>: wraps an object in another object that maintains the same interface but adds behavior. Example: Coffee + MilkDecorator + SugarDecorator — each wraps and extends the previous. Follows Open/Closed: add new behavior without modifying existing classes.<br><br><strong>Python @decorator</strong>: syntactic sugar for wrapping functions/classes. Same concept but operates on callables.<br><br>Conceptually identical principle (wrapping + same interface), different mechanics. Pattern applies to objects; Python @decorator applies to functions/classes.",
+      mk: "Decorator Pattern = same interface + added behavior | Follows Open/Closed | Python @decorator is the same idea for functions" },
+    { q: "What is the Repository Pattern and why is it important?",
+      a: "Abstracts <strong>data access logic from business logic</strong>. Repository interface defines CRUD operations. Concrete implementations for different data sources.<br><br>Example: UserRepository interface with find_by_id(), save(), delete(). SQLUserRepository and MongoUserRepository implement it. Business logic depends only on the interface.<br><br>Benefits:<br>• Swap database without changing business logic<br>• Easy to mock for unit testing<br>• Centralized query logic (no scattered SQL)<br>• Used in Clean Architecture, Domain-Driven Design (DDD)",
+      mk: "Repository = abstract data access | Swap DB without changing business logic | Core of Clean Architecture" },
+    { q: "What is the MVC pattern? How does it apply to Django/Flask?",
+      a: "<strong>Model</strong>: data and business logic (database, computations).<br><strong>View</strong>: presentation layer (HTML templates, UI).<br><strong>Controller</strong>: handles user input, updates model, selects view.<br><br><strong>Django</strong> is actually <strong>MTV</strong>: Model (ORM), Template (HTML), View (Python function/class — acts as controller).<br><strong>Flask</strong>: more explicitly MVC with routes as controllers.<br><br>Benefit: separation of concerns. Change UI without touching business logic. Multiple views of same model. Parallel development by teams.",
+      mk: "MVC = Model + View + Controller | Django = MTV (Model + Template + View-function) | Separation of concerns" },
+    { q: "What is the Builder Pattern? When is it useful?",
+      a: "Constructs complex objects step-by-step using a fluent interface. Useful when object has many optional parameters.<br><br>Without Builder: constructor telescoping — __init__(name, age=None, email=None, phone=None, ...) becomes unwieldy.<br><br>With Builder: QueryBuilder().select('id').from_table('users').where('age>18').limit(10).build() — readable, optional steps, easy to extend.<br><br>Used in: SQL query builders, Spark DataFrame transformations, HTTP request builders, test data factories, configuration objects.",
+      mk: "Builder = step-by-step construction, fluent interface | Avoids telescoping constructors | Returns self at each step" },
+    { q: "What is the Adapter Pattern? Give an example.",
+      a: "Converts one interface into another that clients expect. Like a power plug adapter — same electricity, different socket shape.<br><br>Example: LegacyPaymentAPI has charge(amount, currency). New system expects process(Transaction). Adapter wraps legacy API:<br>class PaymentAdapter: def process(self, txn): return legacy.charge(txn.amount, txn.currency)<br><br>Used in: ORMs (adapt object model to SQL), Pandas (adapts CSV/JSON/Excel to DataFrame), API wrappers, third-party library integration, legacy system integration.",
+      mk: "Adapter = convert one interface to another | Wrap legacy code to work with new system | Like a power adapter" }
+  ]},
+  { id: 't6', label: 'Database', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)', icon: '🗄️',
+    pill: 'Medium Priority', pillColor: '#fbbf24', qs: [
+    { q: "What are the ACID properties of database transactions?",
+      a: "<strong>A - Atomicity</strong>: transaction is all-or-nothing. Bank transfer: debit + credit both succeed or both rolled back.<br><strong>C - Consistency</strong>: transaction takes DB from one valid state to another. All constraints maintained.<br><strong>I - Isolation</strong>: concurrent transactions don't interfere. Appears as if executed sequentially.<br><strong>D - Durability</strong>: committed transaction survives crashes. Written to disk/WAL (Write-Ahead Log).<br><br>These properties ensure data integrity in relational databases. NoSQL often trades some of these for performance/scale.",
+      mk: "ACID: Atomicity, Consistency, Isolation, Durability | Atomicity = all or nothing | Durability = persists crashes" },
+    { q: "Explain database normalization: 1NF, 2NF, 3NF.",
+      a: "<strong>1NF (First Normal Form)</strong>: atomic values only (no repeating groups, no arrays in cells), each column has one value, unique rows (primary key).<br><br><strong>2NF (Second Normal Form)</strong>: 1NF + no partial dependency (non-key attributes depend on the ENTIRE primary key, not just part — relevant with composite keys).<br><br><strong>3NF (Third Normal Form)</strong>: 2NF + no transitive dependency (non-key attributes depend only on primary key, not on other non-key attributes).<br><br>Goal: eliminate redundancy, prevent update anomalies.",
+      mk: "1NF = atomic, unique rows | 2NF = no partial dependency | 3NF = no transitive dependency | Goal: eliminate redundancy" },
+    { q: "Explain all SQL JOIN types with examples.",
+      a: "<strong>INNER JOIN</strong>: only matching rows from both tables.<br><strong>LEFT JOIN</strong>: all rows from left + matching from right (NULL where no match).<br><strong>RIGHT JOIN</strong>: all from right + matching from left (NULL where no match).<br><strong>FULL OUTER JOIN</strong>: all rows from both, NULLs where no match.<br><strong>CROSS JOIN</strong>: cartesian product (every row × every row).<br><strong>SELF JOIN</strong>: table joined with itself (find employees whose manager is also an employee).<br><br>Most common: INNER and LEFT JOIN. Remember: LEFT JOIN keeps all left rows.",
+      mk: "INNER = intersection | LEFT = all left + matched right | FULL = all both | SELF JOIN for hierarchical data" },
+    { q: "What is an index? How does it improve queries? What are the trade-offs?",
+      a: "Index is a data structure (usually B-tree) that enables fast row lookups by column value, avoiding full table scan.<br><br>With index: SELECT is O(log n). Without: O(n).<br><br><strong>Trade-offs</strong>:<br>✅ Dramatically speeds up SELECT/WHERE/JOIN<br>❌ Slows INSERT/UPDATE/DELETE (index must be updated)<br>❌ Uses extra disk space<br><br>Create index on: columns in WHERE, JOIN ON, ORDER BY, frequently queried foreign keys.<br>Don't index: low-cardinality columns (boolean), rarely queried columns, small tables.",
+      mk: "Index = B-tree structure | SELECT O(log n) vs O(n) | Trade-off: read faster, write slower" },
+    { q: "What is the difference between WHERE and HAVING clauses?",
+      a: "<strong>WHERE</strong>: filters individual rows BEFORE grouping. Cannot use aggregate functions (COUNT, SUM, AVG, MAX, MIN).<br><br><strong>HAVING</strong>: filters groups AFTER GROUP BY. Can use aggregate functions.<br><br>Example:<br>SELECT dept, COUNT(*) as cnt<br>FROM employees<br>WHERE salary > 30000 -- filters rows first<br>GROUP BY dept<br>HAVING COUNT(*) > 5 -- filters groups<br><br>Order of execution: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT",
+      mk: "WHERE = before GROUP BY, no aggregates | HAVING = after GROUP BY, with aggregates | Execution order: FROM→WHERE→GROUP BY→HAVING→SELECT" },
+    { q: "What is the CAP Theorem?",
+      a: "In a distributed system, you can guarantee at most <strong>2 of 3</strong>:<br><br><strong>C - Consistency</strong>: all nodes see same data simultaneously.<br><strong>A - Availability</strong>: every request gets a (non-error) response.<br><strong>P - Partition Tolerance</strong>: system works despite network partition.<br><br>Since network partitions are unavoidable in distributed systems, choose between:<br><strong>CP</strong>: consistent + partition-tolerant (may be unavailable during partition). Examples: MongoDB, HBase, ZooKeeper.<br><strong>AP</strong>: available + partition-tolerant (may return stale data). Examples: Cassandra, CouchDB, DynamoDB.",
+      mk: "CAP = pick 2 | P is unavoidable → choose C or A | CP = MongoDB | AP = Cassandra | CA = traditional SQL" },
+    { q: "What is the N+1 query problem? How do you solve it?",
+      a: "N+1: fetch N parent records (1 query), then make 1 additional query PER parent = N+1 total queries.<br><br>Example: fetch 100 blog posts (1 query), then 100 separate queries for each post's author = 101 queries.<br><br>Fixes:<br>• SQL: use JOIN to fetch in one query<br>• Django ORM: select_related() for ForeignKey (SQL JOIN), prefetch_related() for ManyToMany (2 queries total)<br>• SQLAlchemy: joinedload() or subqueryload()<br><br>Causes massive performance degradation at scale (100 users → 101 queries; 100,000 users → 100,001 queries).",
+      mk: "N+1 = 1 query + N extra queries | Fix with JOIN or ORM eager loading | Use query logging to detect in development" },
+    { q: "What are the differences between SQL and NoSQL databases?",
+      a: "<strong>SQL (Relational)</strong>: structured schema, tables+rows, ACID compliant, JOIN supported, vertical scaling primarily. Examples: PostgreSQL, MySQL, SQLite.<br><br><strong>NoSQL</strong>: flexible/no schema, various models (document, key-value, column-family, graph), horizontal scaling, eventual consistency (often). Examples: MongoDB (document), Redis (key-value), Cassandra (column), Neo4j (graph).<br><br>Not 'better' — use the right tool. SQL for: complex queries, transactions, relational data. NoSQL for: unstructured data, high write throughput, internet-scale.",
+      mk: "SQL = structured + ACID + joins | NoSQL = flexible + scalable + eventual consistency | Neither is universally better" },
+    { q: "Write SQL to find the second highest salary from an employee table.",
+      a: "Method 1 (subquery):<br>SELECT MAX(salary) FROM employees WHERE salary &lt; (SELECT MAX(salary) FROM employees);<br><br>Method 2 (LIMIT/OFFSET):<br>SELECT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1;<br><br>Method 3 (DENSE_RANK — best for top-N):<br>SELECT salary FROM (SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk FROM employees) t WHERE rnk = 2;<br><br>DENSE_RANK handles ties correctly (same salary people get same rank).",
+      mk: "Use DENSE_RANK for Nth highest (handles ties) | Subquery for 2nd only | OFFSET 1 also works but less portable" },
+    { q: "What is database sharding vs replication?",
+      a: "<strong>Replication</strong>: copies of SAME data on multiple servers. Types: master-replica (master writes, replicas read), multi-master.<br>Benefits: read scalability, high availability, failover.<br><br><strong>Sharding (horizontal partitioning)</strong>: data split across multiple servers. Each shard holds a SUBSET of data.<br>Benefits: write scalability, handles huge datasets.<br>Complexity: routing queries to correct shard, cross-shard queries harder.<br><br>Strategies: hash-based sharding (consistent hashing), range-based, geography-based.<br>Common: replicate within a shard, multiple shards for scale.",
+      mk: "Replication = copy same data, read scale | Sharding = split data, write scale | Consistent hashing for shard assignment" },
+    { q: "What is a transaction isolation level? Name the four levels.",
+      a: "Isolation levels control visibility of uncommitted data between concurrent transactions:<br><br><strong>1. READ UNCOMMITTED</strong>: can read uncommitted changes (dirty reads). Fastest, least safe.<br><strong>2. READ COMMITTED</strong>: only read committed data. Prevents dirty reads. Default in PostgreSQL.<br><strong>3. REPEATABLE READ</strong>: same query returns same results within transaction. Prevents non-repeatable reads. Default in MySQL.<br><strong>4. SERIALIZABLE</strong>: transactions appear to execute sequentially. Strictest, slowest. Prevents phantom reads.<br><br>Higher isolation = fewer concurrency anomalies = more locking = lower performance.",
+      mk: "4 levels: READ UNCOMMITTED < READ COMMITTED < REPEATABLE READ < SERIALIZABLE | Higher = safer but slower" },
+    { q: "What is a stored procedure vs a view vs a materialized view?",
+      a: "<strong>View</strong>: virtual table defined by SELECT query. No data stored. Recalculated on each access. Simplifies complex queries, adds abstraction layer.<br><br><strong>Materialized View</strong>: like view but results cached/stored on disk. Fast to query, stale until refreshed. Good for expensive aggregations.<br><br><strong>Stored Procedure</strong>: precompiled SQL code block with optional logic (loops, conditionals, variables). Stored in DB, executed with CALL/EXEC. Reduces network round-trips, centralizes business logic in DB.<br><br>Views = abstraction. Mat. views = caching. Stored proc = reusable logic.",
+      mk: "View = virtual, no storage | Materialized View = cached view | Stored Procedure = reusable DB-side logic" }
+  ]},
+  { id: 't7', label: 'AI Fundamentals', color: '#4ade80', bg: 'rgba(74,222,128,0.1)', icon: '🧠',
+    pill: '🔥 Most Critical', pillColor: '#4ade80', qs: [
+    { q: "What is the difference between supervised, unsupervised, and reinforcement learning?",
+      a: "<strong>Supervised Learning</strong>: labeled training data, learn mapping input→output. Types: Classification (discrete labels: spam/not-spam, cat/dog) and Regression (continuous values: house price, temperature).<br><br><strong>Unsupervised Learning</strong>: unlabeled data, find hidden patterns. Types: Clustering (K-means, DBSCAN), Dimensionality Reduction (PCA, t-SNE), Anomaly Detection.<br><br><strong>Reinforcement Learning</strong>: agent takes actions in environment, receives rewards/penalties, learns policy to maximize cumulative reward. Examples: game playing (AlphaGo, ChatGPT RLHF), robotics, recommendation systems.",
+      mk: "Supervised = labeled data | Unsupervised = find patterns | Reinforcement = reward + penalty + policy | RLHF = fine-tuning LLMs" },
+    { q: "What is the bias-variance tradeoff?",
+      a: "<strong>Bias</strong>: error from overly simplistic model (underfitting). Model misses patterns even in training data. Example: fitting a line to nonlinear data.<br><br><strong>Variance</strong>: error from model too sensitive to training data (overfitting). Model memorizes noise, fails on new data. Example: deep decision tree memorizing training set.<br><br>Tradeoff: reducing bias (more complex model) increases variance and vice versa.<br><br>Goal: find sweet spot where total error (bias² + variance + irreducible noise) is minimized. Validation curve visualizes this.",
+      mk: "High bias = underfitting = too simple | High variance = overfitting = too complex | Goal: minimize bias²+variance" },
+    { q: "What is overfitting and how do you prevent it?",
+      a: "Overfitting: model performs well on training data but poorly on unseen data. Memorizes noise instead of learning patterns.<br><br><strong>Prevention techniques</strong>:<br>• More training data<br>• Data augmentation (rotation, flip, crop for images)<br>• <strong>Dropout</strong>: randomly zero out neurons during training<br>• <strong>L1/L2 Regularization</strong>: penalize large weights<br>• Early stopping: stop when validation loss starts increasing<br>• Cross-validation: reliable evaluation<br>• Reduce model complexity (fewer layers/parameters)<br>• Ensemble methods (bagging, boosting)<br>• Batch normalization",
+      mk: "Dropout, L1/L2 regularization, early stopping, more data = key tools | Monitor train vs val loss gap" },
+    { q: "Explain precision, recall, F1 score, and AUC-ROC.",
+      a: "For binary classification with TP, TN, FP, FN:<br><br><strong>Accuracy</strong> = (TP+TN)/(TP+TN+FP+FN) — misleading for imbalanced data<br><strong>Precision</strong> = TP/(TP+FP) — of predicted positives, how many are correct? (minimize false alarms)<br><strong>Recall</strong> = TP/(TP+FN) — of actual positives, how many found? (minimize missed cases)<br><strong>F1</strong> = 2×P×R/(P+R) — harmonic mean, balances both<br><strong>AUC-ROC</strong>: area under ROC curve (TPR vs FPR at all thresholds). 0.5=random, 1.0=perfect<br><br>Use Precision when FP costly (spam). Use Recall when FN costly (cancer detection). Use F1 for imbalanced datasets.",
+      mk: "Precision = TP/(TP+FP) | Recall = TP/(TP+FN) | F1 = harmonic mean | AUC-ROC = threshold-independent overall performance" },
+    { q: "What is gradient descent? Explain its main variants.",
+      a: "Gradient descent minimizes loss by updating weights in the negative gradient direction: <strong>w = w − lr × ∂L/∂w</strong><br><br><strong>Batch GD</strong>: uses all training data per update. Stable but slow for large datasets.<br><strong>SGD (Stochastic)</strong>: one random sample per update. Fast, noisy, can escape local minima.<br><strong>Mini-batch GD</strong>: batches of 32-256 samples. Best of both — most common in practice.<br><br>Optimizers:<br><strong>Adam</strong>: adaptive learning rates + momentum. Most popular default.<br><strong>RMSprop</strong>: adaptive learning rates for each parameter.<br><strong>Momentum</strong>: adds velocity term to escape saddle points faster.",
+      mk: "Mini-batch GD is standard | Adam = go-to optimizer | Learning rate = most important hyperparameter" },
+    { q: "Explain forward propagation and backpropagation in neural networks.",
+      a: "<strong>Forward Propagation</strong>: input flows through layers, each layer computes z = Wx + b, then a = activation(z). Final layer outputs prediction. Loss computed.<br><br><strong>Backpropagation</strong>: computes gradient of loss w.r.t. each weight using <strong>chain rule</strong>:<br>∂L/∂W = ∂L/∂a × ∂a/∂z × ∂z/∂W<br><br>Gradients flow backward layer by layer. Each weight updated: w = w − lr × ∂L/∂w.<br><br>Common activation functions: <strong>ReLU</strong> (hidden layers), <strong>Sigmoid</strong> (binary output), <strong>Softmax</strong> (multiclass), <strong>Tanh</strong> (RNNs).",
+      mk: "Forward = compute predictions | Backprop = compute gradients via chain rule | ReLU is default activation for hidden layers" },
+    { q: "What is the vanishing gradient problem? How is it solved?",
+      a: "During backprop in deep networks, gradients multiply through layers. If derivatives are small (sigmoid saturates at ~0 for large |x|, derivative → 0), gradients shrink exponentially toward input layers → early layer weights barely update → network stops learning.<br><br><strong>Solutions</strong>:<br>• <strong>ReLU activation</strong>: gradient = 1 for positive inputs (no saturation)<br>• <strong>Residual connections</strong> (ResNet skip connections): bypass some layers<br>• <strong>Batch normalization</strong>: normalize layer inputs, reduces internal covariate shift<br>• <strong>Xavier/He initialization</strong>: proper weight initialization<br>• <strong>Gradient clipping</strong>: for RNNs",
+      mk: "Vanishing gradient = sigmoid in deep nets | Fix: ReLU + BatchNorm + residual connections + proper init" },
+    { q: "Explain the Transformer architecture and why it replaced RNNs.",
+      a: "<strong>Transformer components</strong>:<br>• Multi-Head Self-Attention: each token attends to all other tokens<br>• Feed-Forward Network: per-position MLP<br>• Layer Normalization + Residual connections<br>• Positional Encoding: inject position info (no recurrence)<br><br><strong>Why better than RNN</strong>:<br>• <strong>Parallelizable</strong>: process entire sequence simultaneously (GPUs!)<br>• <strong>No vanishing gradient</strong> over long distances<br>• Better at <strong>long-range dependencies</strong><br>• Scales with data and compute<br><br>Base of: BERT (encoder), GPT (decoder), T5 (encoder-decoder).",
+      mk: "Transformer = Self-Attention + FFN + LayerNorm + positional encoding | Key: parallelizable, long-range, no RNN bottleneck" },
+    { q: "What is the attention mechanism in transformers? Explain Q, K, V.",
+      a: "Attention computes relationships between tokens using three learned matrices:<br><br><strong>Q (Query)</strong>: 'what am I looking for?'<br><strong>K (Key)</strong>: 'what do I have?'<br><strong>V (Value)</strong>: 'what information to pass along?'<br><br>Formula: <strong>Attention(Q,K,V) = softmax(QK^T / √d_k) × V</strong><br><br>Steps: 1) Dot product Q×K^T = raw attention scores (similarity). 2) Scale by √d_k (prevent vanishing gradients). 3) Softmax → probabilities. 4) Weighted sum of Values.<br><br>Multi-head: run attention h times with different Q,K,V projections, concatenate results → captures different types of relationships.",
+      mk: "Q=what I need, K=what I have, V=what to extract | softmax(QK^T/√dk)×V | Multi-head = multiple relationship types" },
+    { q: "What is regularization? Explain L1 vs L2.",
+      a: "Regularization adds a penalty to the loss function to discourage overly complex models.<br><br><strong>L1 (Lasso)</strong>: Loss + λΣ|w_i|. Drives some weights to <strong>exactly zero</strong> → feature selection. Creates sparse models. Useful when many features are irrelevant.<br><br><strong>L2 (Ridge)</strong>: Loss + λΣw_i². Drives weights <strong>toward zero but not exactly</strong>. Prevents any single feature from dominating. Smoother solution. More common in deep learning.<br><br><strong>Elastic Net</strong>: combines L1 + L2.<br><br>λ (lambda) controls strength. λ=0 = no regularization. Large λ = heavy penalty = simpler model.",
+      mk: "L1 = sparse, feature selection, some weights = 0 | L2 = all weights shrink toward 0 | λ controls strength" },
+    { q: "What is K-means clustering? What are its limitations?",
+      a: "K-means assigns each point to the nearest centroid, recomputes centroids, repeats until convergence.<br><br>Algorithm: 1) Initialize k centroids randomly (use K-means++ for better init). 2) Assign each point to nearest centroid. 3) Recompute centroid as mean of cluster. 4) Repeat until centroids stop moving.<br><br>Time: O(n×k×d×iterations)<br><br><strong>Limitations</strong>: must specify K (use elbow method or silhouette score), assumes spherical clusters, sensitive to outliers/initialization, struggles with non-convex shapes (use DBSCAN instead), assumes similar cluster sizes.",
+      mk: "K-means = iterative centroid update | Use elbow method for K | Limitation: spherical clusters only | DBSCAN = arbitrary shapes" },
+    { q: "What is a CNN? Why is it suited for image tasks?",
+      a: "CNN uses convolutional filters to detect local patterns (edges → shapes → objects).<br><br><strong>Key insight</strong>: translation invariance — same filter detects a cat's ear anywhere in the image.<br><br>Components:<br>• <strong>Conv layer</strong>: applies filters to create feature maps (edges, textures, shapes)<br>• <strong>Pooling</strong>: downsampling (spatial invariance, reduce computation)<br>• <strong>ReLU</strong>: non-linearity after each conv<br>• <strong>Fully connected</strong>: final classification<br><br>Much fewer parameters than dense network for same image size. Architectures: AlexNet, VGG, ResNet (skip connections), EfficientNet.",
+      mk: "CNN = local filters + pooling + translation invariance | Filter = pattern detector | ResNet solved vanishing gradient for deep CNNs" },
+    { q: "What is transfer learning and fine-tuning?",
+      a: "<strong>Transfer Learning</strong>: use model pre-trained on large dataset (ImageNet, large text corpus), apply to new task. General features (edges, shapes, grammar, semantics) transfer.<br><br><strong>Fine-tuning approaches</strong>:<br>1. <strong>Feature extraction</strong>: freeze all pretrained layers, only train new classification head. Fast, needs little data.<br>2. <strong>Full fine-tuning</strong>: unfreeze all/most layers, train with very low learning rate. Better accuracy, needs more data.<br>3. <strong>PEFT (LoRA, adapters)</strong>: fine-tune only small subset of parameters. Common for LLMs.<br><br>Benefits: dramatically less data and training time needed. BERT → fine-tuned on any NLP task in hours.",
+      mk: "Transfer learning = reuse pretrained features | Fine-tuning = update weights for new task | PEFT/LoRA = efficient LLM fine-tuning" },
+    { q: "What is RAG (Retrieval Augmented Generation)?",
+      a: "RAG combines a retrieval system with an LLM to answer questions grounded in real documents.<br><br>Pipeline:<br>1. Documents embedded into <strong>vector database</strong> (Pinecone, Weaviate, FAISS)<br>2. Query embedded with same model<br>3. <strong>Semantic search</strong>: find top-k similar document chunks<br>4. Retrieved chunks + original query → LLM as context<br>5. LLM generates answer grounded in retrieved content<br><br>Benefits over pure LLM: reduces hallucination, knowledge stays current (no retraining), domain-specific knowledge, traceable sources.<br>Used in: AI chatbots, document Q&A, enterprise search, customer support.",
+      mk: "RAG = vector DB retrieval + LLM generation | Reduces hallucination | No fine-tuning needed for new knowledge" },
+    { q: "What is cross-validation? Why use k-fold?",
+      a: "Cross-validation evaluates model on multiple train/test splits for reliable performance estimate.<br><br><strong>k-fold CV</strong>: split data into k equal folds. Train on k-1 folds, test on 1 fold. Rotate k times. Average scores across folds.<br><br>Benefits vs single split:<br>• More reliable estimate (less variance of evaluation)<br>• Uses ALL data for both training and testing<br>• Detects if model is consistent across data subsets<br><br>Typical: k=5 or k=10. <strong>Stratified k-fold</strong>: maintains class proportions in each fold — use for imbalanced datasets.<br><br>Never tune hyperparameters on test fold (data leakage).",
+      mk: "k-fold = k train/test splits, average score | Stratified k-fold for imbalanced data | Never tune on test fold = data leakage" },
+    { q: "What is the difference between a generative and discriminative model?",
+      a: "<strong>Discriminative</strong>: models P(y|x) — directly learns decision boundary between classes. Examples: Logistic Regression, SVM, Neural Networks, Random Forest.<br><br><strong>Generative</strong>: models P(x,y) or P(x|y) — learns how data was generated. Can generate new samples. Examples: Naive Bayes, GANs, VAEs, LLMs, Diffusion Models.<br><br>Discriminative: usually better for classification with enough data. Generative: can create new data, handle missing features, useful for anomaly detection, and is the basis of all modern AI image/text generation.",
+      mk: "Discriminative = P(y|x), decision boundary | Generative = P(x,y), can generate data | LLMs and GANs are generative" },
+    { q: "What is word embedding? What is Word2Vec?",
+      a: "Word embeddings represent words as dense real-valued vectors where semantically similar words are geometrically close.<br><br><strong>Word2Vec</strong>: trains shallow neural net to predict context from word (Skip-gram) or word from context (CBOW). Result: vectors capture semantic relationships — famous example: <em>king − man + woman ≈ queen</em>.<br><br>Modern: <strong>BERT</strong> uses contextual embeddings — same word has different vector depending on context ('bank' in river vs finance).<br><br>Used in: every NLP task, semantic search, recommendation systems, sentence similarity, clustering documents.",
+      mk: "Word2Vec: word → dense vector | king-man+woman≈queen | BERT = contextual embeddings (same word, different context = different vector)" },
+    { q: "What is the difference between classification and regression? Name algorithms for each.",
+      a: "<strong>Classification</strong>: predict discrete category. Algorithms: Logistic Regression, SVM, Decision Tree, Random Forest, KNN, Naive Bayes, Neural Network. Metrics: accuracy, F1, AUC-ROC.<br><br><strong>Regression</strong>: predict continuous value. Algorithms: Linear Regression, Ridge, Lasso, Decision Tree Regressor, Random Forest Regressor, SVR, Neural Network. Metrics: RMSE, MAE, R².<br><br>Note: Logistic Regression is a classification algorithm despite 'regression' in name. Decision Trees and Neural Networks work for both with different output layers.",
+      mk: "Classification = discrete | Regression = continuous | Logistic Regression = classification (despite name!) | Swap output layer for either task" },
+    { q: "What are hyperparameters vs model parameters? Give examples.",
+      a: "<strong>Model parameters</strong>: learned FROM data during training. Examples: neural network weights and biases, linear regression coefficients, decision tree split points.<br><br><strong>Hyperparameters</strong>: SET before training, not learned. Must be tuned manually or via search. Examples:<br>• Learning rate (most important!)<br>• Number of layers / neurons per layer<br>• Batch size, epochs<br>• Dropout rate, regularization λ<br>• k in KNN, n_estimators in Random Forest<br>• Kernel type in SVM<br><br>Tuning methods: Grid Search, Random Search, Bayesian Optimization (most efficient).",
+      mk: "Parameters = learned from data | Hyperparameters = set before training | Learning rate = most impactful hyperparameter" },
+    { q: "What are common ML data preprocessing steps?",
+      a: "Preprocessing pipeline for ML:<br><br><strong>1. Handling missing values</strong>: mean/median imputation, forward fill (time series), or model-based.<br><strong>2. Feature scaling</strong>: StandardScaler (z-score, mean=0 std=1) for distance-based algorithms (SVM, KNN). MinMaxScaler for neural networks.<br><strong>3. Encoding categorical</strong>: One-hot encoding for nominal, label encoding for ordinal, target encoding for high-cardinality.<br><strong>4. Feature engineering</strong>: create interaction terms, polynomial features, log-transform skewed features.<br><strong>5. Train/val/test split</strong>: typically 70/15/15 or 80/10/10. Always fit scaler on train only.<br><strong>6. Handling imbalanced data</strong>: SMOTE (oversampling), undersampling, class weights.",
+      mk: "Scale features for SVM/KNN/NN | Fit scaler on train only (prevent leakage) | One-hot for nominal, label for ordinal" },
+    { q: "What is the Random Forest algorithm? How does it reduce overfitting?",
+      a: "Random Forest = ensemble of Decision Trees using <strong>bagging</strong> (Bootstrap Aggregating).<br><br>Algorithm:<br>1. Train n decision trees, each on a <strong>random bootstrap sample</strong> (with replacement) of training data.<br>2. At each split, consider only a <strong>random subset of features</strong> (√n_features for classification).<br>3. Final prediction: majority vote (classification) or average (regression).<br><br>Why reduces overfitting: individual trees overfit, but averaging uncorrelated trees cancels out noise. Randomization (sample + features) decorrelates trees.<br><br>Key hyperparameters: n_estimators, max_depth, max_features, min_samples_split.",
+      mk: "Random Forest = bagging + random feature subsets | More trees = lower variance | Feature importance built-in" }
+  ]},
+  { id: 't8', label: 'Math / Statistics', color: '#f87171', bg: 'rgba(248,113,113,0.1)', icon: '📐',
+    pill: 'High Priority', pillColor: '#f87171', qs: [
+    { q: "What is Bayes' Theorem? Give an intuitive medical example.",
+      a: "Formula: <strong>P(A|B) = P(B|A) × P(A) / P(B)</strong><br><br>Updates prior belief P(A) given evidence B.<br><br>Example: 1% of population has disease. Test is 95% accurate (95% true positive rate, 5% false positive rate). You test positive. What's the probability you have the disease?<br><br>P(positive|disease)=0.95, P(disease)=0.01, P(positive)=0.95×0.01+0.05×0.99=0.059<br>P(disease|positive) = 0.95×0.01/0.059 ≈ <strong>16%</strong><br><br>Counterintuitive! Even with positive test, only 16% chance if disease is rare. This is why low-prevalence screening requires very high specificity.",
+      mk: "P(A|B) = P(B|A)×P(A)/P(B) | Base rate matters hugely | Foundation of Naive Bayes classifier" },
+    { q: "Explain mean, median, mode, variance, and standard deviation.",
+      a: "<strong>Mean</strong>: sum/n. Sensitive to outliers. Best for symmetric distributions.<br><strong>Median</strong>: middle value when sorted. Robust to outliers. Best for skewed distributions (income, housing prices).<br><strong>Mode</strong>: most frequent value. Best for categorical data.<br><strong>Variance</strong>: σ² = Σ(xi−μ)²/n. Average squared deviation. Units are squared.<br><strong>Std Dev</strong>: σ = √variance. Same units as data. Most interpretable spread measure.<br><br>68-95-99.7 rule (normal dist): 68% data within 1σ, 95% within 2σ, 99.7% within 3σ.",
+      mk: "Skewed data → use median | Variance = squared deviations | 68-95-99.7 rule for normal distribution" },
+    { q: "What is the Central Limit Theorem? Why is it fundamental to ML?",
+      a: "CLT states: the sum (or mean) of a large number of independent, identically distributed random variables approaches a <strong>normal distribution</strong>, regardless of the original distribution's shape.<br><br>Formally: sample mean X̄ ~ N(μ, σ²/n) for large n.<br><br>Why fundamental: justifies using normal distribution for many ML algorithms. Explains why gradient noise in SGD is approximately Gaussian. Foundation for hypothesis testing, confidence intervals. Explains why many natural phenomena are normally distributed (height, measurement errors).",
+      mk: "CLT: sum of many IID random variables → Normal distribution | Sample mean is normally distributed for large n" },
+    { q: "What is correlation? How does it differ from causation?",
+      a: "<strong>Correlation</strong>: statistical association between two variables (−1 to +1). Pearson correlation measures linear relationship. Spearman measures monotonic relationship (rank-based).<br><br><strong>Causation</strong>: one variable directly causes change in another.<br><br>Classic example: ice cream sales and drowning deaths are positively correlated (both increase in summer). Confounding variable: hot weather causes both.<br><br>In ML: correlated features don't imply one causes the other. Use domain knowledge + causal inference (Pearl's do-calculus) to establish causation. Correlation is sufficient for prediction, but causation needed for intervention.",
+      mk: "Correlation ≠ causation | Confounding variables create spurious correlations | r=1 perfect positive, r=-1 perfect negative, r=0 no linear relationship" },
+    { q: "What are eigenvalues and eigenvectors? How do they relate to PCA?",
+      a: "For matrix A: <strong>Av = λv</strong> where v is eigenvector (direction) and λ is eigenvalue (scale).<br><br>Eigenvectors are directions unchanged by transformation A; eigenvalues tell how much they stretch/compress.<br><br><strong>PCA (Principal Component Analysis)</strong>:<br>1. Compute covariance matrix of data<br>2. Find eigenvectors (principal components = directions of maximum variance)<br>3. Sort by eigenvalues (largest = most variance captured)<br>4. Project data onto top-k eigenvectors<br><br>Result: k-dimensional representation that preserves maximum variance. Used for dimensionality reduction, visualization, noise removal.",
+      mk: "Eigenvector = direction unchanged by transformation | PCA = project onto top eigenvectors of covariance matrix | Explained variance ratio = eigenvalue/Σeigenvalues" },
+    { q: "What is entropy and cross-entropy loss in machine learning?",
+      a: "<strong>Entropy</strong>: H(p) = −Σ p(x) log p(x). Measures uncertainty/impurity in a distribution. High entropy = high uncertainty (uniform distribution). Zero entropy = certainty. Used in decision trees (information gain = entropy before − weighted entropy after split).<br><br><strong>Cross-entropy</strong>: H(p,q) = −Σ p(x) log q(x). Measures how different two distributions are. Standard loss for classification: p = true labels (one-hot), q = model predictions (softmax).<br><br>Minimizing cross-entropy = maximizing log-likelihood = making model predictions close to true distribution.",
+      mk: "Entropy = uncertainty | Cross-entropy loss = standard for classification | Lower cross-entropy = better predictions" },
+    { q: "What is gradient in calculus and how is it used in backpropagation?",
+      a: "<strong>Gradient</strong>: vector of partial derivatives ∇f = [∂f/∂w1, ∂f/∂w2,...]. Points in direction of steepest ascent. Magnitude = rate of change.<br><br>In backprop: use <strong>chain rule</strong> to compute ∂L/∂w for each weight:<br>∂L/∂W1 = ∂L/∂a3 × ∂a3/∂z3 × ∂z3/∂a2 × ... × ∂z1/∂W1<br><br>Chain rule decomposes complex derivatives into products of simpler ones. Enables efficient gradient computation in O(n) instead of O(n²).<br><br>Weights updated: w = w − lr × gradient (move in direction of steepest descent).",
+      mk: "Gradient = direction of steepest ascent | Backprop uses chain rule | Move opposite to gradient = descend loss" },
+    { q: "What is a normal distribution? What is the 68-95-99.7 rule?",
+      a: "Normal (Gaussian) distribution: symmetric bell curve defined by mean μ and standard deviation σ. Notation: X ~ N(μ, σ²).<br><br><strong>68-95-99.7 rule</strong>:<br>• 68% of data falls within 1σ of mean<br>• 95% within 2σ<br>• 99.7% within 3σ<br><br>Standard normal: μ=0, σ=1. Z-score: z = (x−μ)/σ tells how many standard deviations from mean.<br><br>Important in ML: weight initialization (Normal init), noise in data, many natural phenomena. Central Limit Theorem ensures many processes converge to normal.",
+      mk: "N(μ,σ²) | 68-95-99.7 rule | Z-score = (x-μ)/σ | Central Limit Theorem → normal distribution" },
+    { q: "What is the dot product of two vectors? What is its significance in ML?",
+      a: "<strong>a · b = Σ ai×bi = |a||b|cos(θ)</strong><br><br>Geometric: measures similarity between vectors. Same direction = large positive. Perpendicular = 0. Opposite = negative.<br><br>In ML:<br>• <strong>Cosine similarity</strong> = (a·b)/(|a||b|) — measures embedding similarity (search, NLP)<br>• Neural network linear transformation = dot product: z = W·x + b<br>• Attention score = Q·K^T — similarity between query and key tokens<br>• Similarity search in vector databases uses dot product or cosine similarity",
+      mk: "Dot product = a·b = |a||b|cos(θ) | Perpendicular = 0 | Cosine similarity = dot product normalized | Foundation of attention" },
+    { q: "What is conditional probability and the multiplication rule?",
+      a: "<strong>Conditional probability</strong>: P(A|B) = P(A∩B) / P(B). Probability of A given B has occurred.<br><br><strong>Multiplication rule</strong>: P(A∩B) = P(A|B) × P(B) = P(B|A) × P(A)<br><br>If A and B are <strong>independent</strong>: P(A|B) = P(A), P(A∩B) = P(A)×P(B)<br><br>Applications in ML:<br>• Naive Bayes assumes feature independence: P(features|class) = ΠP(fi|class)<br>• Hidden Markov Models use conditional probabilities for sequence modeling<br>• Bayesian inference updates probabilities as evidence arrives",
+      mk: "P(A|B) = P(A∩B)/P(B) | Independent: P(A∩B)=P(A)P(B) | Naive Bayes assumes feature independence given class" },
+    { q: "What is Type I and Type II error in hypothesis testing?",
+      a: "<strong>Type I error (False Positive)</strong>: rejecting the null hypothesis when it's actually TRUE. False alarm. Probability = α (significance level, typically 0.05).<br><br><strong>Type II error (False Negative)</strong>: failing to reject the null when it's actually FALSE. Missed detection. Probability = β. Power = 1−β.<br><br>Medical context: Type I = healthy person diagnosed with disease. Type II = sick person diagnosed as healthy (usually more dangerous).<br><br>In ML: Type I error = false positive = flagging innocent spam. Type II error = false negative = missing real spam. Use precision/recall to control these trade-offs.",
+      mk: "Type I = False Positive (α=0.05) | Type II = False Negative (β) | Power = 1-β | Medical: Type II usually worse" },
+    { q: "What is the p-value? How is it interpreted?",
+      a: "<strong>p-value</strong>: probability of observing test statistic at least as extreme as observed, <em>assuming the null hypothesis is true</em>.<br><br>Interpretation: if p &lt; 0.05 (α), reject null hypothesis (result is statistically significant). If p ≥ 0.05, fail to reject (not enough evidence).<br><br>Common misconception: p-value is NOT the probability that the null hypothesis is true. It's the probability of seeing data this extreme IF the null were true.<br><br>Small p-value = data is unlikely under null = evidence against null. Large sample sizes can make trivially small effects statistically significant.",
+      mk: "p-value = P(data | H0 is true) | p<0.05 → reject H0 | p-value is NOT P(H0 is true) | Large n → everything significant" }
+  ]},
+  { id: 't9', label: 'Analytical / IQ', color: '#d1d5db', bg: 'rgba(156,163,175,0.08)', icon: '🧩',
+    pill: 'Warm-up', pillColor: '#9ca3af', qs: [
+    { q: "3 boxes: one with 2 apples, one with 2 oranges, one mixed. All labels are WRONG. Pick one fruit from one box to label all correctly.",
+      a: "Pick from the box labeled 'Mixed' (Apple & Orange).<br><br>Since ALL labels are wrong, this box CANNOT be mixed — it must contain either 2 apples or 2 oranges.<br><br>• If you pick an apple → this box has 2 apples.<br>The box labeled 'Oranges' can't have oranges (wrong label) and can't have apples (that's the first box) → it must be mixed.<br>The box labeled 'Apples' must have oranges.<br><br>• If you pick an orange → same logic applies symmetrically.<br><br>One pick correctly identifies all three boxes.",
+      mk: "Key insight: since ALL labels wrong, box labeled 'Mixed' CANNOT be mixed | One pick resolves all ambiguity" },
+    { q: "You have a 3L jug and a 5L jug. Measure exactly 4 liters.",
+      a: "Step 1: Fill the 5L jug completely.<br>Step 2: Pour from 5L into 3L until 3L is full. → 5L now has 2L, 3L is full.<br>Step 3: Empty the 3L jug.<br>Step 4: Pour the 2L from 5L into 3L. → 3L has 2L, 5L is empty.<br>Step 5: Fill the 5L jug completely again.<br>Step 6: Pour from 5L into 3L until 3L is full (needs 1L more). → 5L now has exactly 4L. Done!<br><br>Alternatively: Fill 3L → pour into 5L → fill 3L again → pour into 5L (takes 2L more) → 3L has 1L left → empty 5L → pour 1L → fill 3L → pour into 5L → 4L.",
+      mk: "Work systematically: fill, pour, empty | Target = 5 - (3-2) = 4 | Water puzzle = classic BFS state search problem" },
+    { q: "A snail climbs a 10-foot pole. Climbs 3 feet per day, slides back 2 feet per night. How many days to reach the top?",
+      a: "Net progress per day/night cycle = 3 − 2 = 1 foot.<br><br>After 7 complete cycles: snail is at 7 feet.<br>Day 8: climbs 3 feet → reaches 10 feet during the day.<br>Since it reaches the top during the day, it doesn't slide back that night.<br><br><strong>Answer: 8 days.</strong><br><br>Common wrong answer: 10 days (forgetting that once it reaches the top, there's no sliding back). Always check if the goal is reached mid-cycle.",
+      mk: "Day 8: at 7 + 3 = 10 → done! | Don't apply night sliding when goal is reached during day | Answer: 8 days (not 10)" },
+    { q: "If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops definitely Lazzies?",
+      a: "Yes — this is a valid syllogism (deductive reasoning).<br><br>Formally: A ⊆ B (all Bloops ∈ Razzies) and B ⊆ C (all Razzies ∈ Lazzies), therefore A ⊆ C (all Bloops ∈ Lazzies) by transitivity.<br><br>This is the same logical structure used in: set theory (subsets), OOP type hierarchies (if Dog is Animal and Animal is LivingThing, then Dog is LivingThing), and database query optimization (transitive closure).<br><br>Answer: Yes, all Bloops are definitely Lazzies.",
+      mk: "A⊆B, B⊆C → A⊆C (transitivity) | Same structure as OOP inheritance | Answer: YES" },
+    { q: "A clock shows 3:15. What is the exact angle between the hour and minute hands?",
+      a: "Minute hand at 3:15 = exactly at 15 min mark = <strong>90°</strong> (pointing to 3).<br><br>Hour hand: at 3:00 it's at 90°. By 3:15 it has moved 15/60 × 30° = <strong>7.5°</strong> past the 3.<br>Hour hand position = 90° + 7.5° = 97.5°<br><br>Angle between hands = |97.5° − 90°| = <strong>7.5°</strong><br><br>General formula: |30H − 5.5M| where H = hour, M = minutes.<br>|30×3 − 5.5×15| = |90 − 82.5| = 7.5°<br><br>For minimum angle: if result > 180°, use 360° − result.",
+      mk: "Formula: |30H - 5.5M| | 3:15 → |90-82.5| = 7.5° | Hour hand moves 0.5°/min | Minute hand moves 6°/min" },
+    { q: "What comes next? 2, 6, 12, 20, 30, 42, ___",
+      a: "Method 1 — Differences: 4, 6, 8, 10, 12 → differences increase by 2. Next difference = 14. Answer = 42 + 14 = <strong>56</strong>.<br><br>Method 2 — Formula: n(n+1):<br>1×2=2, 2×3=6, 3×4=12, 4×5=20, 5×6=30, 6×7=42, 7×8=<strong>56</strong>.<br><br>Pattern recognition strategy: first look at differences between terms. If not obvious, look at second differences. Also try: ratios, products, squares, n(n+1) formula.",
+      mk: "Differences: 4,6,8,10,12,→14 | Formula n(n+1) | Strategy: differences → second differences → ratios | Answer: 56" },
+    { q: "8 identical balls, one is heavier. Find the heavy one using a balance scale in exactly 2 weighings.",
+      a: "Divide 8 balls into groups: <strong>A(3), B(3), C(2)</strong>.<br><br><strong>Weighing 1</strong>: Weigh group A vs group B.<br><br><strong>Case 1 — They balance</strong>: heavy ball is in group C (2 balls).<br>Weighing 2: Weigh one vs one → heavier side wins.<br><br><strong>Case 2 — One side heavier</strong>: heavy ball is in that group of 3.<br>Weighing 2: Take 2 balls from heavy group, weigh 1 vs 1.<br>• One heavier → that's it.<br>• They balance → it's the 3rd ball not weighed.<br><br>Key insight: 2 weighings can distinguish up to 3² = 9 balls.",
+      mk: "3-3-2 split | Each weighing gives 3 outcomes (left, right, balance) | 2 weighings = 3²=9 distinguishable outcomes" },
+    { q: "What is the probability of getting at least one 6 when rolling two fair dice?",
+      a: "Use the complement: P(at least one 6) = 1 − P(no 6 on either die).<br><br>P(no 6 on one die) = 5/6<br>P(no 6 on both dice) = 5/6 × 5/6 = 25/36<br><br>P(at least one 6) = 1 − 25/36 = <strong>11/36 ≈ 0.306 = 30.6%</strong><br><br>Direct count: 11 favorable outcomes — (6,1),(6,2),(6,3),(6,4),(6,5),(6,6),(1,6),(2,6),(3,6),(4,6),(5,6) = 11.<br><br>Rule: for 'at least one' problems, <strong>always use complement</strong> — it's always simpler.",
+      mk: "P(at least one) = 1 - P(none) | 1 - (5/6)² = 11/36 | Complement rule is always simpler for 'at least one'" },
+    { q: "How would you estimate the number of AI engineers currently working in Bangladesh? (Fermi estimation)",
+      a: "Break into components (show your reasoning — that's what's evaluated):<br><br>Population of Bangladesh: ~170M<br>Working-age urban population: ~30M<br>University graduates: ~5% = 1.5M<br>STEM graduates: ~15% of grads = 225,000/year graduating, ~1M active in workforce<br>Computer science/EE related: ~25% = 250,000<br>Software engineers total: ~150,000 (Bangladesh has a growing tech sector)<br>AI/ML specifically: ~5% = ~7,500<br>Adjust for BJIT and similar AI-focused companies: perhaps 5,000–10,000<br><br><strong>Answer: order of magnitude ~5,000–10,000</strong>. Show all assumptions clearly.",
+      mk: "Fermi estimation: break down → estimate each step → multiply → sanity check | Structure and reasoning matter more than exact answer" },
+    { q: "You have 100 doors all closed. You toggle every door (open closed). Then toggle every 2nd door. Then every 3rd... up to 100th. Which doors are open at the end?",
+      a: "Doors that are toggled an <strong>odd number of times</strong> end up open.<br><br>A door n is toggled once for each divisor of n (toggle door n when counter divides n).<br><br>Most numbers have an even number of divisors (divisors come in pairs: if d|n then n/d also divides n).<br><br>Exception: <strong>perfect squares</strong> have an odd number of divisors (middle divisor √n pairs with itself).<br><br>Perfect squares from 1–100: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 → <strong>10 doors open</strong>.<br><br>Classic puzzle testing mathematical insight, not brute force.",
+      mk: "Answer: 10 doors open | Only perfect squares (1,4,9,16,25,36,49,64,81,100) | Key insight: perfect squares have odd number of divisors" }
+  ]}
+];
+
+let learnedSet = JSON.parse(localStorage.getItem('bjit_learned') || '[]');
+let learnedMap = new Set(learnedSet);
+let openCards = new Set();
+
+function totalQ() { return TOPICS.reduce((s,t)=>s+t.qs.length,0); }
+
+function saveProgress() {
+  try { localStorage.setItem('bjit_learned', JSON.stringify([...learnedMap])); } catch(e){}
+}
+
+function updateProgress() {
+  const done = learnedMap.size;
+  const total = totalQ();
+  const pct = Math.round(done/total*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-text').textContent = done+' / '+total;
+}
+
+function buildSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = '<div class="sidebar-label">Topics</div>';
+  TOPICS.forEach(t => {
+    const learned = t.qs.filter((_,qi) => learnedMap.has(t.id+'-'+qi)).length;
+    const div = document.createElement('div');
+    div.className = 'nav-item';
+    div.id = 'nav-'+t.id;
+    div.innerHTML = `<span class="nav-dot" style="background:${t.color}"></span>
+      <span>${t.label}</span>
+      <span class="nav-count">${t.qs.length}q</span>
+      ${learned>0?`<span class="nav-learned">${learned}✓</span>`:''}`;
+    div.addEventListener('click', () => {
+      document.getElementById('sec-'+t.id)?.scrollIntoView({behavior:'smooth'});
+    });
+    sb.appendChild(div);
+  });
+}
+
+function cardKey(tid, qi) { return tid+'-'+qi; }
+
+function buildMain(filter) {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  if (!filter) {
+    const hero = document.createElement('div');
+    hero.className = 'hero';
+    const totalDone = learnedMap.size;
+    const total = totalQ();
+    hero.innerHTML = `
+      <div class="hero-title">Master Every Question. <span>Top 1% guaranteed.</span></div>
+      <div class="hero-sub">Comprehensive Q&A compiled by an expert Senior AI Engineer + Examiner. Study these ${total} questions across 9 exam topics and you'll have complete coverage.</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">Total Q&A</div></div>
+        <div class="stat-box"><div class="stat-num">9</div><div class="stat-lbl">Topics</div></div>
+        <div class="stat-box"><div class="stat-num">${totalDone}</div><div class="stat-lbl">Learned</div></div>
+        <div class="stat-box"><div class="stat-num">${total-totalDone}</div><div class="stat-lbl">Remaining</div></div>
+      </div>`;
+    main.appendChild(hero);
+  }
+
+  let anyVisible = false;
+
+  TOPICS.forEach(t => {
+    const filteredQs = filter
+      ? t.qs.map((q,i)=>({...q,i})).filter(q => q.q.toLowerCase().includes(filter.toLowerCase()) || q.a.toLowerCase().includes(filter.toLowerCase()))
+      : t.qs.map((q,i)=>({...q,i}));
+
+    if (filteredQs.length === 0) return;
+    anyVisible = true;
+
+    const sec = document.createElement('div');
+    sec.className = 'topic-section';
+    sec.id = 'sec-'+t.id;
+
+    const hdr = document.createElement('div');
+    hdr.className = 'topic-header';
+    const learnedCount = t.qs.filter((_,qi) => learnedMap.has(t.id+'-'+qi)).length;
+    hdr.innerHTML = `
+      <div class="topic-icon" style="background:${t.bg}">${t.icon}</div>
+      <div>
+        <div class="topic-title">${t.label}</div>
+        <div class="topic-meta">${t.qs.length} questions · ${learnedCount} mastered</div>
+      </div>
+      <span class="topic-pill" style="background:${t.bg};color:${t.color};border:1px solid ${t.color}33">${t.pill}</span>`;
+    sec.appendChild(hdr);
+
+    filteredQs.forEach(qObj => {
+      const qi = qObj.i;
+      const key = cardKey(t.id, qi);
+      const isOpen = openCards.has(key);
+      const isLearned = learnedMap.has(key);
+
+      const card = document.createElement('div');
+      card.className = 'qa-card'+(isOpen?' open':'')+(isLearned?' learned':'');
+      card.id = 'card-'+key;
+
+      card.innerHTML = `
+        <div class="qa-question">
+          <span class="q-num">Q${qi+1}</span>
+          <span class="q-text">${qObj.q}</span>
+          <div class="q-right">
+            <button class="learn-btn${isLearned?' done':''}" data-key="${key}">${isLearned?'✓ Mastered':'Mark mastered'}</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-text">${qObj.a}</div>
+          ${qObj.mk ? `<div class="must-know"><strong>⚡ Exam must-know:</strong> ${qObj.mk}</div>` : ''}
+        </div>`;
+
+      card.querySelector('.qa-question').addEventListener('click', (e) => {
+        if (e.target.closest('.learn-btn')) return;
+        if (openCards.has(key)) openCards.delete(key);
+        else openCards.add(key);
+        card.classList.toggle('open');
+      });
+
+      card.querySelector('.learn-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (learnedMap.has(key)) learnedMap.delete(key);
+        else learnedMap.add(key);
+        saveProgress();
+        card.classList.toggle('learned', learnedMap.has(key));
+        card.querySelector('.learn-btn').className = 'learn-btn'+(learnedMap.has(key)?' done':'');
+        card.querySelector('.learn-btn').textContent = learnedMap.has(key)?'✓ Mastered':'Mark mastered';
+        updateProgress();
+        buildSidebar();
+        document.querySelector('.stat-box:nth-child(3) .stat-num').textContent = learnedMap.size;
+        document.querySelector('.stat-box:nth-child(4) .stat-num').textContent = totalQ()-learnedMap.size;
+        document.querySelector('.stat-lbl').parentElement.querySelectorAll('.stat-num')[2] && (document.querySelectorAll('.stat-num')[2].textContent = learnedMap.size);
+      });
+
+      sec.appendChild(card);
+    });
+
+    main.appendChild(sec);
+  });
+
+  if (!anyVisible) {
+    main.innerHTML = '<div class="no-results">No questions match your search.</div>';
+  }
+}
+
+function doSearch(val) {
+  buildMain(val.trim() || null);
+}
+
+// Sidebar active highlight on scroll
+function onScroll() {
+  const sections = document.querySelectorAll('.topic-section');
+  let current = null;
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top < 120) current = s.id.replace('sec-','');
+  });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (current) document.getElementById('nav-'+current)?.classList.add('active');
+}
+
+document.querySelector('.main')?.addEventListener('scroll', onScroll);
+
+buildSidebar();
+buildMain(null);
+updateProgress();
+</script>
+</body>
+</html>
